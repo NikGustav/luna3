@@ -1877,14 +1877,17 @@
         // 本地响应，当API失败时使用
         const LOCAL_RESPONSES = [
             "你好，我是Luna，很高兴认识你。今天有什么想聊的吗？",
-            "今天的月相是盈凸月，代表着能量逐渐增强的时期。这是开始新计划的好时机，有什么想要尝试的事情吗？",
+            "月相影响着我们的情绪和能量。现在是个不错的时机，有什么想要谈的吗？",
             "我理解你的感受。有时候与自己对话也是一种成长。有什么具体问题想问我吗？",
             "塔罗牌可以帮助我们看到不同角度的可能性。你想了解什么方面的指引呢？",
             "月亮的周期提醒我们生活也有起伏。面对困难时，记得像月亮一样，总会有重新明亮的时候。",
             "最近有什么让你感到困扰的事情吗？或许我可以提供一些不同的视角。",
             "每个人都有自己的人生节奏，就像月亮有它的周期一样。不必和他人比较。",
-            "盈凸月是一个能量增长和建设的好时机。有什么计划或项目你想要继续推进吗？",
-            "今天的星象显示金星和木星形成了良好的相位，这对感情和事业都是好兆头。"
+            "今天想聊什么呢？我很乐意听你分享或回答你的问题。",
+            "星象的变化总是提醒我们生活中的变与不变。你最近感受到什么变化吗？",
+            "想知道一些关于月相或星座的知识吗？或者只是想随意聊聊也可以。",
+            "月亮的光芒即使在最黑暗的夜晚也能给人希望。你现在需要什么样的支持？",
+            "不同的月相带来不同的能量。你最近的感受如何？"
         ];
 
         // 系统提示 - DEFINE ONLY ONCE
@@ -2067,6 +2070,28 @@
         // 发送消息到 API
         async function sendMessageToAPI(message) {
             console.log('正在调用API获取回复...');
+            
+            // 添加此行以强制使用本地响应而不调用API
+            const useLocalFallback = true; // 修改为强制使用本地响应
+            
+            // 如果设置为使用本地响应，则直接从本地响应数组中随机选择一条
+            if (useLocalFallback) {
+                console.log('使用本地响应模式');
+                // 从本地响应中随机选择一条
+                const randomIndex = Math.floor(Math.random() * LOCAL_RESPONSES.length);
+                const response = LOCAL_RESPONSES[randomIndex];
+                
+                // 根据输入内容匹配更具体的响应
+                if (message.includes('月相') || message.includes('月亮')) {
+                    const moonPhase = getCurrentMoonPhase();
+                    return `现在是${moonPhase}，这个时期特别适合内省和放松。${LOCAL_RESPONSES[1]}`;
+                }
+                
+                // 模拟网络延迟
+                await new Promise(resolve => setTimeout(resolve, 800));
+                return response;
+            }
+            
             try {
                 // 下面是原始的API调用代码，当useLocalFallback为false时使用
                 const messageHistory = [];
@@ -2658,7 +2683,10 @@
             // 3. 更新记录页面
             updateChatRecords();
             
-            // 4. 聊天功能绑定
+            // 4. 确保全局函数可用
+            window.sendMessageToAPI = sendMessageToAPI;
+            
+            // 5. 聊天功能绑定
             const chatInput = document.getElementById('chat-input');
             const sendButton = document.getElementById('send-button');
             const chatMessages = document.getElementById('chat-messages');

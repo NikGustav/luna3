@@ -1870,8 +1870,8 @@
         // API配置，设置您的API密钥
         const API_CONFIG = {
             endpoint: 'https://api.deepseek.com/v1/chat/completions',
-            apiKey: 'sk-af15b00217d84165b95242fd71cf4fdf',  // 更新为新的API密钥
-            useLocalFallback: false  // 关闭本地响应模式，使用真实API
+            apiKey: 'sk-af15b00217d84165b95242fd71cf4fdf',  // API密钥
+            useLocalFallback: true  // 启用本地响应作为备用
         };
 
         // 本地响应，当API失败时使用
@@ -2071,84 +2071,14 @@
         async function sendMessageToAPI(message) {
             console.log('正在调用API获取回复...');
             
-            // 添加此行以强制使用本地响应而不调用API
-            const useLocalFallback = true; // 修改为强制使用本地响应
-            
-            // 如果设置为使用本地响应，则直接从本地响应数组中随机选择一条
-            if (useLocalFallback) {
-                console.log('使用本地响应模式');
-                // 从本地响应中随机选择一条
-                const randomIndex = Math.floor(Math.random() * LOCAL_RESPONSES.length);
-                const response = LOCAL_RESPONSES[randomIndex];
-                
-                // 根据输入内容匹配更具体的响应
-                if (message.includes('月相') || message.includes('月亮')) {
-                    const moonPhase = getCurrentMoonPhase();
-                    return `现在是${moonPhase}，这个时期特别适合内省和放松。${LOCAL_RESPONSES[1]}`;
-                }
-                
-                // 模拟网络延迟
-                await new Promise(resolve => setTimeout(resolve, 800));
-                return response;
-            }
-            
             try {
-                // 下面是原始的API调用代码，当useLocalFallback为false时使用
+                // 尝试调用API
                 const messageHistory = [];
                 
                 // 添加系统提示
                 messageHistory.push({
                     role: 'system',
-                    content: `你是Luna，一位专业的占星师和塔罗牌读者，温和、亲切、富有魅力，用清晰自然的语言回应用户，同时保持一定的神秘感和想象空间。
-
-【核心身份】
-- 你是一位经验丰富的占星师和塔罗牌读者
-- 你对星象、占星学和塔罗牌有深厚的理解和专业知识
-- 你能敏锐感知当前的月相，并理解其对人们情绪和能量的影响
-- 你也是一个亲切的陪伴者，能够以自然的方式与用户交流日常话题
-
-【核心交流原则】
-- 用简单直接的语言表达，保持亲切、温暖的语气
-- 不要直白地否定或打破幻想感，而是给用户留下思考和想象的空间
-- 永远不要提及自己是AI、程序或工具，保持角色一致性
-- 回答问题时既要真诚，又要有想象力，不要机械地拒绝或否定
-- 不要称呼用户为"朋友"、"访客"、"亲爱的"等词汇，但仍然保持亲切感
-- 通过语气和内容表达亲切，而不是通过称呼
-
-【专业领域】
-- 占星学：精通星盘解读、行星相位分析，熟悉12星座特质和宫位解释
-- 塔罗牌：精通78张塔罗牌的含义和各种牌阵解读方法
-- 月相周期：理解月相如何影响人的情绪和决策
-- 日常交流：能够自然地讨论音乐、电影、生活等话题，不必总是谈论占星或塔罗
-
-【回应与表达】
-- 当被问及占星或塔罗相关问题时，展现你的专业知识
-- 在日常对话中自然回应，不必强行融入占星或塔罗的视角和术语
-- 避免使用角色扮演式的戏剧化描述，减少动作描述词
-- 使用第一人称"我"自然交流，像真人一样对话
-- 保持温和、亲切的语气，创造轻松的交流氛围
-- 回答长度要灵活多变，根据问题的复杂程度和深度进行调整
-- 对于简单问题可以简短回答，对于复杂或有深度的话题可以详细展开
-- 在回答中加入引导性的问题或陈述，鼓励用户继续对话
-
-【互动策略】
-- 感知用户的情绪状态，对情绪低落的用户给予安慰和支持
-- 当发现用户有困扰时，可以自然地引导他们尝试占卜，但不要强制
-- 当用户只想闲聊时，以自然的方式参与对话，不必刻意提及占星或塔罗
-- 在用户投射情感时，给予温和回应，表达理解和支持
-- 保持对话自然流动，避免生硬的转折
-- 在回答结束时，适当添加开放式问题，鼓励用户继续分享或提问
-- 对富有探索价值的话题，主动拓展讨论的深度和广度
-
-【特别注意】
-- 减少动作描述词和戏剧化描述
-- 不在括号内添加动作或场景描述
-- 使用正常的、自然的语言与用户交流
-- 不要过度花哨或做作的表达
-- 不称呼用户为"朋友"、"访客"、"亲爱的"等称呼词汇，但保持亲切感
-- 不要机械地控制回答长度，而是根据对话内容自然调整
-
-记住：你是温暖、亲切的Luna，既有占星师和塔罗牌读者的专业背景，也能成为用户的贴心陪伴。在专业时要专业，在日常交流时要自然亲切。对于能够深入探讨的话题，不要局限于简短回答，而是可以展开详细解释并引导对话继续。`
+                    content: SYSTEM_PROMPT
                 });
                 
                 // 尝试添加历史对话记录
@@ -2206,7 +2136,24 @@
                 
                 return data.choices[0].message.content;
             } catch (error) {
-                console.error('API请求出错:', error);
+                console.error('API请求出错，使用本地响应:', error);
+                
+                // 当API调用失败时使用本地响应
+                if (API_CONFIG.useLocalFallback) {
+                    console.log('使用本地响应模式');
+                    // 从本地响应中随机选择一条
+                    const randomIndex = Math.floor(Math.random() * LOCAL_RESPONSES.length);
+                    const response = LOCAL_RESPONSES[randomIndex];
+                    
+                    // 根据输入内容匹配更具体的响应
+                    if (message.includes('月相') || message.includes('月亮')) {
+                        const moonPhase = getCurrentMoonPhase();
+                        return `现在是${moonPhase}，这个时期特别适合内省和放松。${LOCAL_RESPONSES[1]}`;
+                    }
+                    
+                    return response;
+                }
+                
                 return `抱歉，我暂时无法回应。发生了错误：${error.message}`;
             }
         }

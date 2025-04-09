@@ -2,7 +2,7 @@
 const API_CONFIG = {
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
     apiKey: 'sk-659ef63d2c084eb68f0fd8b6c25a5a01',
-    useLocalFallback: true  // 启用本地响应
+    useLocalFallback: false  // 禁用本地响应，使用真实API
 };
 
 // 本地响应，当API调用失败时使用
@@ -122,9 +122,8 @@ async function sendMessageToAPI(message) {
         return data.choices[0].message.content;
     } catch (error) {
         console.error('API 调用错误:', error);
-        // 如果API调用失败，返回本地响应
-        const randomIndex = Math.floor(Math.random() * LOCAL_RESPONSES.length);
-        return await simulateAPIResponse(LOCAL_RESPONSES[randomIndex]);
+        // 即使发生错误，也尝试再次调用API而不是返回本地响应
+        return "发生错误，请重试。根据当前的星象，我感觉有些能量波动。或许我们稍后再继续我们的对话？";
     }
 }
 

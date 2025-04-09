@@ -2310,7 +2310,16 @@
 
         // 模拟月相功能作为备用
         function getCurrentMoonPhase() {
-            return "盈凸月";
+            // 调用js/moonphase.js中的函数获取实际月相
+            try {
+                if (typeof getMoonPhase === 'function') {
+                    const moonData = getMoonPhase();
+                    return moonData.phase;
+                }
+            } catch (error) {
+                console.error('获取月相信息失败:', error);
+            }
+            return "盈凸月"; // 备用值
         }
 
         function getMoonPhaseDescription() {

@@ -2213,7 +2213,7 @@
 
         // 统一的消息发送函数
         async function handleMessageSend(message) {
-            console.log(`发送消息: ${message}`);
+            console.log(`发送消息: "${message}"`);
             if (!message || !message.trim()) {
                 console.warn('消息为空，不发送');
                 return;
@@ -2221,17 +2221,23 @@
             
             // 确保对话框已显示
             showOverlay();
+            console.log('对话框已显示，准备发送消息');
             
             // 使用setTimeout给DOM一点时间来更新
             setTimeout(async () => {
-                const overlayMessageBox = document.querySelector('.overlay-message-box');
-                const overlayInput = document.querySelector('.overlay-input');
+                console.log('开始处理消息发送...');
                 
-                if (!overlayMessageBox) {
-                    console.error('发送消息失败，未找到消息框', document.body.innerHTML);
+                // 使用id选择器直接获取消息框
+                const chatMessages = document.getElementById('chat-messages');
+                const chatInput = document.getElementById('chat-input');
+                
+                if (!chatMessages) {
+                    console.error('发送消息失败，未找到消息框 #chat-messages', document.body.innerHTML);
                     alert('消息发送失败：未找到消息框');
                     return;
                 }
+                
+                console.log('找到消息框，继续处理');
                 
                 const currentTime = new Date().toLocaleTimeString('zh-CN', { 
                     hour: '2-digit', 
@@ -2240,9 +2246,9 @@
                 
                 try {
                     // 清空输入框（如果存在）
-                    if (overlayInput) {
-                        overlayInput.value = '';
-                        overlayInput.style.height = 'auto';
+                    if (chatInput) {
+                        chatInput.value = '';
+                        chatInput.style.height = 'auto';
                     }
                 
                     // 显示用户消息
@@ -2252,8 +2258,9 @@
                         <div class="message-content">${message}</div>
                         <div class="message-time">${currentTime}</div>
                     `;
-                    overlayMessageBox.appendChild(userMessageDiv);
-                    overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+                    chatMessages.appendChild(userMessageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    console.log('用户消息已添加到对话框');
                 
                     // 显示思考状态
                     const thinkingDiv = document.createElement('div');
@@ -2265,8 +2272,9 @@
                             <div class="thinking-dot"></div>
                         </div>
                     `;
-                    overlayMessageBox.appendChild(thinkingDiv);
-                    overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+                    chatMessages.appendChild(thinkingDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    console.log('思考状态已添加');
 
                     // 添加用户消息到历史记录
                     if (typeof conversationHistory !== 'undefined') {
@@ -2278,9 +2286,11 @@
                     }
 
                     // 调用API获取回复
+                    console.log('正在获取AI回复...');
                     let aiResponse;
                     try {
                         aiResponse = await sendMessageToAPI(message);
+                        console.log('成功获取到AI回复');
                     } catch (apiError) {
                         console.error('API调用错误:', apiError);
                         aiResponse = "抱歉，我暂时无法回应。请稍后再试。";
@@ -2288,7 +2298,9 @@
                     
                     // 移除思考状态
                     const indicator = document.querySelector('.thinking-indicator');
-                    if (indicator) indicator.remove();
+                    if (indicator && indicator.parentNode) {
+                        indicator.parentNode.removeChild(indicator);
+                    }
                     
                     // 显示AI回复
                     const aiMessageDiv = document.createElement('div');
@@ -2297,8 +2309,9 @@
                         <div class="message-content">${aiResponse}</div>
                         <div class="message-time">${currentTime}</div>
                     `;
-                    overlayMessageBox.appendChild(aiMessageDiv);
-                    overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+                    chatMessages.appendChild(aiMessageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    console.log('AI回复已添加到对话框');
                     
                     // 添加AI回复到历史记录
                     if (typeof conversationHistory !== 'undefined') {
@@ -2480,20 +2493,22 @@
             if (!overlay) {
                 console.error('对话框不存在，正在尝试创建...');
                 
-                // 创建对话框
+                // 创建对话框，与HTML结构保持一致
                 const newOverlay = document.createElement('div');
                 newOverlay.id = 'conversation-overlay';
-                newOverlay.className = 'overlay';
+                newOverlay.className = 'overlay-page';
                 newOverlay.innerHTML = `
-                    <div class="overlay-container">
+                    <div class="overlay-content">
                         <div class="overlay-header">
-                            <h2>对话</h2>
-                            <button class="close-overlay">×</button>
+                            <div class="moon-phase">今夜月相：${getCurrentMoonPhase()}</div>
+                            <button class="close-overlay" onclick="closeOverlay()">×</button>
                         </div>
-                        <div class="overlay-message-box"></div>
-                        <div class="overlay-input-container">
-                            <textarea class="overlay-input" placeholder="写下你的想法..."></textarea>
-                            <button class="overlay-send">发送</button>
+                        <div class="overlay-message-box" id="chat-messages">
+                            <!-- 消息内容会在这里动态添加 -->
+                        </div>
+                        <div class="overlay-input-area">
+                            <textarea class="overlay-input" id="chat-input" placeholder="写下你的想法..." rows="1"></textarea>
+                            <button class="overlay-send" id="send-button">↑</button>
                         </div>
                     </div>
                 `;

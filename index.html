@@ -2219,94 +2219,110 @@
                 return;
             }
             
-            const overlayMessageBox = document.querySelector('.overlay-message-box');
-            const overlayInput = document.querySelector('.overlay-input');
-            if (!overlayMessageBox || !overlayInput) {
-                console.error('发送消息失败，未找到消息框或输入框');
-                return;
-            }
+            // 确保对话框已显示
+            showOverlay();
             
-            const currentTime = new Date().toLocaleTimeString('zh-CN', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-            
-            try {
-                // 清空输入框并调整高度
-                overlayInput.value = '';
-                overlayInput.style.height = 'auto';
-            
-            // 显示用户消息
-            const userMessageDiv = document.createElement('div');
-            userMessageDiv.className = 'message user-message';
-            userMessageDiv.innerHTML = `
-                <div class="message-content">${message}</div>
-                <div class="message-time">${currentTime}</div>
-            `;
-            overlayMessageBox.appendChild(userMessageDiv);
-                overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
-            
-            // 显示思考状态
-            const thinkingDiv = document.createElement('div');
-                thinkingDiv.className = 'thinking-indicator';
-            thinkingDiv.innerHTML = `
-                <div class="thinking">
-                    <div class="thinking-dot"></div>
-                    <div class="thinking-dot"></div>
-                    <div class="thinking-dot"></div>
-                </div>
-            `;
-            overlayMessageBox.appendChild(thinkingDiv);
-                overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
-
-                // 添加用户消息到历史记录
-                if (typeof conversationHistory !== 'undefined') {
-                conversationHistory.push({
-                        role: 'user',
-                        content: message,
-                        timestamp: currentTime
-                    });
+            // 使用setTimeout给DOM一点时间来更新
+            setTimeout(async () => {
+                const overlayMessageBox = document.querySelector('.overlay-message-box');
+                const overlayInput = document.querySelector('.overlay-input');
+                
+                if (!overlayMessageBox) {
+                    console.error('发送消息失败，未找到消息框', document.body.innerHTML);
+                    alert('消息发送失败：未找到消息框');
+                    return;
                 }
+                
+                const currentTime = new Date().toLocaleTimeString('zh-CN', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                try {
+                    // 清空输入框（如果存在）
+                    if (overlayInput) {
+                        overlayInput.value = '';
+                        overlayInput.style.height = 'auto';
+                    }
+                
+                    // 显示用户消息
+                    const userMessageDiv = document.createElement('div');
+                    userMessageDiv.className = 'message user-message';
+                    userMessageDiv.innerHTML = `
+                        <div class="message-content">${message}</div>
+                        <div class="message-time">${currentTime}</div>
+                    `;
+                    overlayMessageBox.appendChild(userMessageDiv);
+                    overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+                
+                    // 显示思考状态
+                    const thinkingDiv = document.createElement('div');
+                    thinkingDiv.className = 'thinking-indicator';
+                    thinkingDiv.innerHTML = `
+                        <div class="thinking">
+                            <div class="thinking-dot"></div>
+                            <div class="thinking-dot"></div>
+                            <div class="thinking-dot"></div>
+                        </div>
+                    `;
+                    overlayMessageBox.appendChild(thinkingDiv);
+                    overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
 
-                // 调用API获取回复
-                const aiResponse = await sendMessageToAPI(message);
-                
-                // 移除思考状态
-                const indicator = document.querySelector('.thinking-indicator');
-                if (indicator) indicator.remove();
-                
-                // 显示AI回复
-                const aiMessageDiv = document.createElement('div');
-                aiMessageDiv.className = 'message ai-message';
-                aiMessageDiv.innerHTML = `
-                    <div class="message-content">${aiResponse}</div>
-                    <div class="message-time">${currentTime}</div>
-                `;
-                overlayMessageBox.appendChild(aiMessageDiv);
-                overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
-                
-                // 添加AI回复到历史记录
-                if (typeof conversationHistory !== 'undefined') {
-                    conversationHistory.push({
-                        role: 'assistant',
-                        content: aiResponse,
-                        timestamp: currentTime
-                    });
-                    
-                    // 保存对话历史
-                    if (typeof saveConversationHistory === 'function') {
-                        saveConversationHistory();
+                    // 添加用户消息到历史记录
+                    if (typeof conversationHistory !== 'undefined') {
+                        conversationHistory.push({
+                            role: 'user',
+                            content: message,
+                            timestamp: currentTime
+                        });
+                    }
+
+                    // 调用API获取回复
+                    let aiResponse;
+                    try {
+                        aiResponse = await sendMessageToAPI(message);
+                    } catch (apiError) {
+                        console.error('API调用错误:', apiError);
+                        aiResponse = "抱歉，我暂时无法回应。请稍后再试。";
                     }
                     
-                    // 更新记录页面
-                    if (typeof updateChatRecords === 'function') {
-                        updateChatRecords();
+                    // 移除思考状态
+                    const indicator = document.querySelector('.thinking-indicator');
+                    if (indicator) indicator.remove();
+                    
+                    // 显示AI回复
+                    const aiMessageDiv = document.createElement('div');
+                    aiMessageDiv.className = 'message ai-message';
+                    aiMessageDiv.innerHTML = `
+                        <div class="message-content">${aiResponse}</div>
+                        <div class="message-time">${currentTime}</div>
+                    `;
+                    overlayMessageBox.appendChild(aiMessageDiv);
+                    overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+                    
+                    // 添加AI回复到历史记录
+                    if (typeof conversationHistory !== 'undefined') {
+                        conversationHistory.push({
+                            role: 'assistant',
+                            content: aiResponse,
+                            timestamp: currentTime
+                        });
+                        
+                        // 保存对话历史
+                        if (typeof saveConversationHistory === 'function') {
+                            saveConversationHistory();
+                        }
+                        
+                        // 更新记录页面
+                        if (typeof updateChatRecords === 'function') {
+                            updateChatRecords();
+                        }
                     }
+                } catch (e) {
+                    console.error('消息处理出错:', e);
+                    alert('消息处理出错: ' + e.message);
                 }
-            } catch (e) {
-                console.error('消息处理出错:', e);
-                alert('消息处理出错: ' + e.message);
-            }
+            }, 300); // 给DOM更新提供300ms的时间
         }
 
         // --- UI Functions --- 
@@ -2461,9 +2477,76 @@
             const overlay = document.getElementById('conversation-overlay');
             const navBar = document.querySelector('.nav-bar');
             
-            if (overlay && navBar) {
+            if (!overlay) {
+                console.error('对话框不存在，正在尝试创建...');
+                
+                // 创建对话框
+                const newOverlay = document.createElement('div');
+                newOverlay.id = 'conversation-overlay';
+                newOverlay.className = 'overlay';
+                newOverlay.innerHTML = `
+                    <div class="overlay-container">
+                        <div class="overlay-header">
+                            <h2>对话</h2>
+                            <button class="close-overlay">×</button>
+                        </div>
+                        <div class="overlay-message-box"></div>
+                        <div class="overlay-input-container">
+                            <textarea class="overlay-input" placeholder="写下你的想法..."></textarea>
+                            <button class="overlay-send">发送</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(newOverlay);
+                
+                // 重新获取元素
+                const newCloseButton = newOverlay.querySelector('.close-overlay');
+                const newSendButton = newOverlay.querySelector('.overlay-send');
+                const newInput = newOverlay.querySelector('.overlay-input');
+                
+                // 绑定关闭按钮事件
+                if (newCloseButton) {
+                    newCloseButton.onclick = function() {
+                        closeOverlay();
+                    };
+                }
+                
+                // 绑定发送按钮事件
+                if (newSendButton && newInput) {
+                    newSendButton.onclick = function() {
+                        const message = newInput.value.trim();
+                        if (message) {
+                            handleMessageSend(message);
+                        }
+                    };
+                    
+                    newInput.onkeydown = function(e) {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            const message = this.value.trim();
+                            if (message) {
+                                handleMessageSend(message);
+                            }
+                        }
+                    };
+                }
+                
+                // 使用新创建的元素
+                newOverlay.classList.add('active');
+                
+                // 如果存在导航栏，隐藏它
+                if (navBar) {
+                    navBar.classList.add('hidden');
+                }
+            } else {
+                // 使用已有的元素
                 overlay.classList.add('active');
-                navBar.classList.add('hidden');
+                
+                // 如果存在导航栏，隐藏它
+                if (navBar) {
+                    navBar.classList.add('hidden');
+                }
                 
                 setTimeout(() => {
                     const overlayInput = document.querySelector('.overlay-input');
@@ -2471,8 +2554,6 @@
                         overlayInput.focus();
                     }
                 }, 300);
-                    } else {
-                console.error('显示对话框失败，未找到对话框或导航栏');
             }
         }
 

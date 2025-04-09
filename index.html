@@ -1748,12 +1748,12 @@
                         <div class="moon-phase">今夜月相：盈凸月</div>
                         <button class="close-overlay" onclick="closeOverlay()">×</button>
                     </div>
-                    <div class="overlay-message-box">
+                    <div class="overlay-message-box" id="chat-messages">
                         <!-- 消息内容会在这里动态添加 -->
                     </div>
                     <div class="overlay-input-area">
-                        <textarea class="overlay-input" placeholder="写下你的想法..." rows="1"></textarea>
-                        <button class="overlay-send">↑</button>
+                        <textarea class="overlay-input" id="chat-input" placeholder="写下你的想法..." rows="1"></textarea>
+                        <button class="overlay-send" id="send-button">↑</button>
                     </div>
                 </div>
             </div>
@@ -2649,298 +2649,116 @@
             // 3. 更新记录页面
             updateChatRecords();
             
-            // 4. 为导航栏和其他元素添加事件监听器
-            setupEventListeners();
+            // 4. 聊天功能绑定
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            const chatMessages = document.getElementById('chat-messages');
             
-            console.log('应用初始化完成');
-        }
-
-        // 统一设置事件监听器
-        function setupEventListeners() {
-            console.log('设置事件监听器...');
-            
-            // 导航栏事件
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.onclick = function(event) {
-                    event.preventDefault();
-                    const pageId = this.getAttribute('data-page');
-                    if (pageId) {
-                        switchPage(pageId, this);
-                    }
-                };
-            });
-            
-            // 首页发送按钮
-            const homeSendButton = document.querySelector('#home-page .send-button');
-            const homeMessageInput = document.querySelector('#home-page .message-input');
-            
-            if (homeSendButton && homeMessageInput) {
-                homeSendButton.onclick = function() {
-                    const message = homeMessageInput.value.trim();
+            if (chatInput && sendButton && chatMessages) {
+                console.log('找到聊天元素，绑定事件');
+                
+                // 发送按钮点击事件
+                sendButton.addEventListener('click', function() {
+                    const message = chatInput.value.trim();
                     if (message) {
-                        showOverlay();
-                        setTimeout(() => {
-                            const overlayInput = document.querySelector('.overlay-input');
-                            if (overlayInput) {
-                                overlayInput.value = message;
-                            }
-                            homeMessageInput.value = '';
-                            handleMessageSend(message);
-                        }, 300);
+                        handleSendMessage(message);
                     }
-                };
-                
-                homeMessageInput.onkeydown = function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        homeSendButton.click();
-                    }
-                };
-            }
-            
-            // 对话框发送按钮
-            const overlayInput = document.querySelector('.overlay-input');
-            const overlaySendButton = document.querySelector('.overlay-send');
-            
-            if (overlaySendButton && overlayInput) {
-                overlaySendButton.onclick = function() {
-                    const message = overlayInput.value.trim();
-            if (message) {
-                        handleMessageSend(message);
-                    }
-                };
-                
-                overlayInput.onkeydown = function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                const message = this.value.trim();
-                if (message) {
-                            handleMessageSend(message);
-                        }
-                    }
-                };
-            }
-            
-            // 开启今夜按钮
-            const startButton = document.querySelector('.start-button');
-            if (startButton) {
-                startButton.onclick = function() {
-                    startApp();
-                };
-            }
-            
-            // 关闭对话框按钮
-            bindCloseButton();
-            
-            console.log('事件监听器设置完成');
-        }
-
-        // 当文档加载完成时初始化应用
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM已加载，开始初始化...");
-            
-            try {
-                // 创建星空背景
-                if (typeof createStars === 'function') {
-                    createStars();
-                }
-                
-                // 加载对话历史
-                if (typeof loadConversationHistory === 'function') {
-                    loadConversationHistory();
-                }
-                
-                // 更新聊天记录
-                if (typeof updateChatRecords === 'function') {
-                    updateChatRecords();
-                }
-                
-                // 更新月相显示
-                if (typeof updateMoonPhaseDisplay === 'function') {
-                    updateMoonPhaseDisplay();
-                }
-                
-                // 加载用户信息
-                const userInfo = localStorage.getItem('userInfo');
-                if (userInfo) {
-                    updateProfileInfo(JSON.parse(userInfo));
-                }
-                
-                // 添加日期输入自动跳转处理
-                const birthyear = document.getElementById('birthyear');
-                const birthmonth = document.getElementById('birthmonth');
-                const birthday = document.getElementById('birthday');
-
-                if (birthyear && birthmonth && birthday) {
-                    // 年份输入处理
-                    birthyear.addEventListener('input', function(e) {
-                        if (this.value.length === 4) {
-                            // 验证年份是否合理
-                            const year = parseInt(this.value);
-                            if (year >= 1900 && year <= new Date().getFullYear()) {
-                                birthmonth.focus();
-                } else {
-                                alert('请输入有效的年份');
-                                this.value = '';
-                            }
-                        }
-                    });
-
-                    // 月份输入处理
-                    birthmonth.addEventListener('input', function(e) {
-                        if (this.value.length === 2) {
-                            // 验证月份是否合理
-                            const month = parseInt(this.value);
-                            if (month >= 1 && month <= 12) {
-                                birthday.focus();
-                            } else {
-                                alert('请输入有效的月份（1-12）');
-                                this.value = '';
-                            }
-                        }
-                    });
-
-                    // 日期输入处理
-                    birthday.addEventListener('input', function(e) {
-                        if (this.value.length === 2) {
-                            // 验证日期是否合理
-                            const day = parseInt(this.value);
-                            const month = parseInt(birthmonth.value);
-                            const year = parseInt(birthyear.value);
-                            
-                            // 获取该月的最大天数
-                            const maxDays = new Date(year, month, 0).getDate();
-                            
-                            if (day >= 1 && day <= maxDays) {
-                                // 日期有效，可以继续
-                                document.getElementById('birthtime').focus();
-                            } else {
-                                alert(`请输入有效的日期（1-${maxDays}）`);
-                                this.value = '';
-                            }
-                        }
-                    });
-
-                    // 添加键盘事件处理
-                    birthyear.addEventListener('keydown', function(e) {
-                        if (e.key === 'Backspace' && this.value.length === 0) {
-                            e.preventDefault();
-                        }
-                    });
-
-                    birthmonth.addEventListener('keydown', function(e) {
-                        if (e.key === 'Backspace' && this.value.length === 0) {
-                            birthyear.focus();
-                            birthyear.setSelectionRange(birthyear.value.length, birthyear.value.length);
-                            e.preventDefault();
-                        }
-                    });
-
-                    birthday.addEventListener('keydown', function(e) {
-                        if (e.key === 'Backspace' && this.value.length === 0) {
-                            birthmonth.focus();
-                            birthmonth.setSelectionRange(birthmonth.value.length, birthmonth.value.length);
-                            e.preventDefault();
-                        }
-                    });
-                }
-                
-                // 设置欢迎页为活动页面
-                document.querySelectorAll('.page').forEach(page => {
-                    page.classList.remove('active');
                 });
                 
-                const welcomePage = document.getElementById('welcome-page');
-                if (welcomePage) {
-                    welcomePage.classList.add('active');
-                } else {
-                    // 如果欢迎页不存在，回退到主页
-                    const homePage = document.getElementById('home-page');
-                    if (homePage) homePage.classList.add('active');
-                }
-                
-                // 绑定所有导航项事件
-                const navItems = document.querySelectorAll('.nav-item');
-                if (navItems && navItems.length > 0) {
-                    navItems.forEach(item => {
-                        if (item) {
-                            item.onclick = function() {
-                                const pageId = this.getAttribute('data-page');
-                                if (pageId && typeof switchPage === 'function') {
-                                    switchPage(pageId, this);
-                                }
-                            };
-                        }
-                    });
-                }
-                
-                // 绑定主页发送按钮事件
-                const homeSendButton = document.querySelector('#home-page .send-button');
-                const homeMessageInput = document.querySelector('#home-page .message-input');
-                
-                if (homeSendButton && homeMessageInput) {
-                    homeSendButton.onclick = function() {
-                        const message = homeMessageInput.value.trim();
+                // 输入框回车事件
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const message = this.value.trim();
                         if (message) {
-                            if (typeof showOverlay === 'function') {
-                                showOverlay();
+                            handleSendMessage(message);
+                        }
+                    }
+                });
+                
+                // 消息发送处理函数
+                async function handleSendMessage(message) {
+                    try {
+                        // 显示用户消息
+                        addMessage(message, true);
+                        chatInput.value = '';
+                        
+                        // 显示加载状态
+                        const loadingDiv = document.createElement('div');
+                        loadingDiv.className = 'thinking';
+                        loadingDiv.innerHTML = `
+                            <div class="thinking-dot"></div>
+                            <div class="thinking-dot"></div>
+                            <div class="thinking-dot"></div>
+                        `;
+                        chatMessages.appendChild(loadingDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        
+                        // 调用API
+                        const response = await window.sendMessageToAPI(message);
+                        
+                        // 移除加载状态
+                        if (loadingDiv.parentNode === chatMessages) {
+                            chatMessages.removeChild(loadingDiv);
+                        }
+                        
+                        // 显示回复
+                        addMessage(response);
+                        
+                        // 保存对话记录
+                        const timestamp = new Date().toLocaleTimeString('zh-CN');
+                        if (typeof conversationHistory !== 'undefined') {
+                            conversationHistory.push({
+                                role: 'user',
+                                content: message,
+                                timestamp
+                            });
+                            
+                            conversationHistory.push({
+                                role: 'assistant',
+                                content: response,
+                                timestamp
+                            });
+                            
+                            // 保存对话历史
+                            if (typeof saveConversationHistory === 'function') {
+                                saveConversationHistory();
                             }
-                            setTimeout(() => {
-                                const overlayInput = document.querySelector('.overlay-input');
-                                if (overlayInput) {
-                                    overlayInput.value = message;
-                                    // 手动触发消息发送
-                                    handleMessageSend(message);
-                                    // 清空主页输入框
-                                    homeMessageInput.value = '';
-                                }
-                            }, 300);
+                            
+                            // 更新记录页面
+                            if (typeof updateChatRecords === 'function') {
+                                updateChatRecords();
+                            }
                         }
-                    };
+                    } catch (error) {
+                        console.error('发送消息错误:', error);
+                        addMessage('抱歉，消息发送失败，请稍后再试。', false);
+                    }
                 }
                 
-                // 绑定对话框发送按钮事件
-                const overlaySendButton = document.querySelector('.overlay-send');
-                const overlayInput = document.querySelector('.overlay-input');
-                
-                if (overlaySendButton && overlayInput) {
-                    // 使用直接赋值onclick，避免重复绑定
-                    overlaySendButton.onclick = function() {
-                        const message = overlayInput.value.trim();
-                        if (message) {
-                            handleMessageSend(message);
-                        }
-                    };
+                // 添加消息到对话框
+                function addMessage(content, isUser = false) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = isUser ? 'message user-message' : 'message ai-message';
                     
-                    // 绑定输入框回车事件
-                    overlayInput.onkeydown = function(e) {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            const message = this.value.trim();
-                            if (message) {
-                                handleMessageSend(message);
-                            }
-                        }
-                    };
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'message-content';
+                    contentDiv.textContent = content;
+                    
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'message-time';
+                    timeDiv.textContent = new Date().toLocaleTimeString('zh-CN');
+                    
+                    messageDiv.appendChild(contentDiv);
+                    messageDiv.appendChild(timeDiv);
+                    
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
-                
-                // 绑定开始按钮事件
-                const startButton = document.querySelector('.start-button');
-                if (startButton && typeof startApp === 'function') {
-                    startButton.onclick = startApp;
-                }
-                
-                // 绑定关闭对话框按钮事件
-                const closeButton = document.querySelector('.close-overlay');
-                if (closeButton && typeof closeOverlay === 'function') {
-                    closeButton.onclick = closeOverlay;
-                }
-                
-                console.log("初始化完成，所有事件已绑定");
-            } catch (error) {
-                console.error("初始化出错:", error);
+            } else {
+                console.error('找不到聊天元素！');
             }
-        });
+        }
 
         // 显示编辑个人信息弹窗
         function showEditProfileOverlay() {

@@ -1,0 +1,3070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今夜盈凸月</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Firefox滚动条样式 */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .iphone-frame {
+            position: relative;
+            width: 375px;
+            height: 812px;
+            background: #1A1A1A;
+            border-radius: 55px;
+            padding: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .notch {
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 100;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .starry-night {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { 
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.02);
+                background: rgba(255, 255, 255, 0.01);
+            }
+            50% { 
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+                background: rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 80px;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 2;
+            color: #fff;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            margin: 0;
+            padding: 15px 0;
+            letter-spacing: 1px;
+        }
+
+        .moon-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 50%;
+            margin-right: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .moon-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 50%;
+            left: -25%;
+        }
+
+        .message-box {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            line-height: 1.5;
+            resize: none;
+            margin: 16px 0;
+            font-family: inherit;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-sizing: border-box;
+            caret-color: transparent;
+            cursor: default;
+            background: rgba(255, 255, 255, 0.03);
+            outline: none;
+        }
+
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border: none;
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .send-button {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.03);
+        }
+
+        .send-button:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .hint-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: none;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-bar.hidden {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+
+        .nav-item {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #fff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 135px;
+            height: 5px;
+            background: #fff;
+            border-radius: 3px;
+            z-index: 1001;
+        }
+
+        /* 欢迎页样式 */
+        .welcome-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+            margin-top: -80px;
+        }
+
+        .moon-logo {
+            width: 96px;
+            height: 96px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .moon-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .moon-stroke {
+            fill: white;
+            stroke: none;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .start-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            letter-spacing: 1px;
+        }
+
+        .start-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* 只在欢迎页面时隐藏导航栏 */
+        #welcome-page.active ~ .nav-bar {
+            display: none !important;
+        }
+
+        /* 导航栏基础样式 */
+        .nav-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: none;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 对话框打开时隐藏导航栏 */
+        .nav-bar.hidden {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+
+        /* 确保在非欢迎页面时导航栏可见 */
+        .page:not(#welcome-page).active ~ .nav-bar {
+            display: flex !important;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 欢迎页面时隐藏home indicator */
+        body.welcome-active .home-indicator {
+            opacity: 0;
+        }
+
+        /* 当不在欢迎页面时显示home indicator */
+        body:not(.welcome-active) .home-indicator {
+            opacity: 1;
+        }
+
+        /* 主页样式 */
+        #home-page {
+            padding-top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        #home-page .title-section {
+            margin-bottom: 48px;
+            text-align: center;
+        }
+
+        #home-page .message-box {
+            text-align: center;
+            width: 85%;
+        }
+
+        #home-page .message-box > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+            width: 100%;
+        }
+
+        /* 观测页样式 */
+        #observe-page {
+            padding-top: 60px;
+        }
+
+        /* 消息页样式 */
+        #message-page {
+            padding: 60px 16px;
+        }
+
+        .chat-records-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px 0;
+        }
+
+        .chat-record-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-record-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-record-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-record-date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+        }
+
+        .chat-record-moon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 20px;
+            height: 20px;
+            opacity: 0.3;
+        }
+
+        .no-records-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 32px 16px;
+            font-size: 14px;
+        }
+
+        /* 个人页面样式 */
+        #profile-page {
+            padding-top: 60px;
+        }
+
+        .divine-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+
+        .divine-option {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.03);
+        }
+
+        .divine-option:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .option-icon {
+            font-size: 24px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-message {
+            color: #00ff00;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .received-message {
+            color: #ff0000;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .message-content {
+            margin-bottom: 16px;
+        }
+
+        .message {
+            margin: 24px 0;
+            max-width: 85%;
+            position: relative;
+            transform-origin: left bottom;
+            animation: messageAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .message-content {
+            padding: 16px 20px;
+            border-radius: 24px;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-message {
+            margin-left: auto;
+            text-align: right;
+            transform-origin: right bottom;
+        }
+
+        .user-message .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.95);
+            margin-left: auto;
+            border-bottom-right-radius: 8px;
+        }
+
+        .ai-message .message-content {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.85);
+            margin-right: auto;
+            border-bottom-left-radius: 8px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+            background: none;
+            text-shadow: none;
+        }
+
+        .message::before {
+            display: none;
+        }
+
+        .user-message::before {
+            display: none;
+        }
+
+        .ai-message::before {
+            display: none;
+        }
+
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            width: fit-content;
+            margin: 24px 0;
+        }
+
+        .thinking-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: thinkingDot 1.4s infinite;
+        }
+
+        .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes thinkingDot {
+            0%, 60%, 100% { transform: scale(0.7); opacity: 0.4; }
+            30% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 优化覆盖页面样式 */
+        .overlay-page {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 48px);
+            height: calc(100% - 96px);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.97));
+            border-radius: 32px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .overlay-page.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .overlay-page.active .overlay-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .overlay-header {
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .moon-phase {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .overlay-message-box {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            position: relative;
+            margin-bottom: 16px;
+            padding: 0 12px;
+        }
+
+        .overlay-message-box::-webkit-scrollbar {
+            display: none;
+        }
+
+        .overlay-input-area {
+            position: relative;
+            margin-top: auto;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 8px;
+            box-sizing: border-box;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border: none;
+            outline: none;
+        }
+
+        .overlay-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            padding: 6px 8px;
+            height: 32px;
+            min-height: 32px;
+            font-family: inherit;
+            margin: 0;
+            outline: none;
+        }
+
+        .overlay-input:focus {
+            outline: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        .overlay-send {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .overlay-send:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .close-overlay {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .close-overlay:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            transform: rotate(90deg);
+        }
+
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .phase-item {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .phase-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .phase-item:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-item:hover::before {
+            opacity: 1;
+        }
+
+        .moon-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            padding: 6px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .moon-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .phase-item:hover .moon-icon {
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+            transform: scale(1.03);
+        }
+
+        .moon-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.05));
+        }
+
+        .phase-name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .phase-desc {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .phases-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .phases-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .page::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .page::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .page::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .phases-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .phases-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .phases-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        div[style*="background: rgba(255,255,255,0.05)"] {
+            border: none !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 自定义滚动条样式 */
+        .overlay-message-box::-webkit-scrollbar,
+        .page::-webkit-scrollbar,
+        .phases-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .overlay-message-box::-webkit-scrollbar-track,
+        .page::-webkit-scrollbar-track,
+        .phases-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .overlay-message-box::-webkit-scrollbar-thumb,
+        .page::-webkit-scrollbar-thumb,
+        .phases-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .overlay-message-box::-webkit-scrollbar-thumb:hover,
+        .page::-webkit-scrollbar-thumb:hover,
+        .phases-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Firefox滚动条样式 */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        /* 用户信息收集页面样式 */
+        .user-info-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            color: #fff;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .info-form {
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M6 8L2 4h8z'/%3E%3C/svg%3E") no-repeat right 16px center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-input:checked::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radio-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .continue-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .continue-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 用户信息弹窗样式 */
+        .user-info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-info-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .user-info-modal {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 90%;
+            max-width: 320px;
+            margin: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .user-info-overlay.active .user-info-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .info-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M6 8L2 4h8z'/%3E%3C/svg%3E") no-repeat right 16px center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-input:checked::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radio-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .continue-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .continue-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 编辑个人信息弹窗样式 */
+        .edit-profile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .edit-profile-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .edit-profile-modal {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 90%;
+            max-width: 320px;
+            margin: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .edit-profile-overlay.active .edit-profile-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .edit-profile-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .edit-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .edit-form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .edit-form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .edit-form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .edit-form-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M6 8L2 4h8z'/%3E%3C/svg%3E") no-repeat right 16px center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .edit-form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .edit-radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .edit-radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .edit-radio-input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .edit-radio-input:checked::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .edit-radio-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .edit-continue-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .edit-continue-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .edit-continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="iphone-frame">
+        <div class="notch"></div>
+        <div class="screen">
+            <div class="starry-night" id="starry-night"></div>
+
+            <!-- 欢迎页 -->
+            <div class="page active" id="welcome-page">
+                <div class="welcome-page">
+                    <div class="moon-logo">
+                        <svg viewBox="0 0 64 64">
+                            <defs>
+                                <clipPath id="welcome-moon-clip">
+                                    <path d="M32,4 A28,28 0 0 1 32,60 C22,60 16,48 16,32 C16,16 22,4 32,4"/>
+                                </clipPath>
+                            </defs>
+                            <circle cx="32" cy="32" r="28" fill="#fff" clip-path="url(#welcome-moon-clip)"/>
+                        </svg>
+                    </div>
+                    <div class="welcome-text">
+                        <div class="moon-phase"></div>
+                        <div>适合放下未完成的事物</div>
+                    </div>
+                    <button class="start-button" onclick="startApp()">
+                        开启今夜
+                    </button>
+                    <div class="copyright">
+                        <div>© 夜间观察所 · Moonpost Observatory</div>
+                        <div>All Rights Reserved</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户信息收集弹窗 -->
+            <div class="user-info-overlay" id="user-info-overlay">
+                <div class="user-info-modal">
+                    <h2 class="title">完善个人信息</h2>
+                    <div class="info-form">
+                        <div class="form-group">
+                            <label class="form-label">昵称</label>
+                            <input type="text" class="form-input" id="nickname" placeholder="输入你的昵称">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">出生年月日</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" class="form-input" id="birthyear" placeholder="年" maxlength="4" style="width: 80px;">
+                                <input type="text" class="form-input" id="birthmonth" placeholder="月" maxlength="2" style="width: 60px;">
+                                <input type="text" class="form-input" id="birthday" placeholder="日" maxlength="2" style="width: 60px;">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">出生时间</label>
+                            <input type="time" class="form-input" id="birthtime">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">性别</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="男" class="radio-input">
+                                    <span class="radio-label">男</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="女" class="radio-input">
+                                    <span class="radio-label">女</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="continue-button" onclick="saveUserInfo()">继续</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 首页 -->
+            <div class="page" id="home-page">
+                <div class="title-section" style="text-align: center;">
+                    <div class="logo-header" style="display: flex; justify-content: center; align-items: center;">
+                        <div class="moon-logo" style="width: 48px; height: 48px; margin: 0 12px 0 0;">
+                            <svg viewBox="0 0 64 64">
+                                <defs>
+                                    <clipPath id="home-moon-clip">
+                                        <path d="M32,4 A28,28 0 0 1 32,60 C22,60 16,48 16,32 C16,16 22,4 32,4"/>
+                                    </clipPath>
+                                </defs>
+                                <circle cx="32" cy="32" r="28" fill="#fff" clip-path="url(#home-moon-clip)"/>
+                            </svg>
+                        </div>
+                        <div>
+                        <h1 style="margin: 0; font-size: 24px; font-weight: normal;">今夜盈凸月</h1>
+                            <div class="moon-phase" style="font-size: 14px; color: rgba(255,255,255,0.7);"></div>
+                        </div>
+                    </div>
+            </div>
+
+                <div class="message-box" style="text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #fff;">
+                        <span>你今晚想说些什么？</span>
+                    </div>
+                    <textarea class="message-input" rows="3" style="text-align: center;"></textarea>
+                    <button class="send-button">
+                        投出
+                    </button>
+                </div>
+            </div>
+
+            <!-- 观测页 -->
+            <div class="page" id="observe-page">
+                <div class="title-section">
+                    <h1 class="title">
+                        <div class="moon-icon"></div>
+                        今夜盈凸月
+                    </h1>
+                </div>
+
+                <div class="message-box">
+                    <div class="info-panel">
+                        <div>月相：盈凸月</div>
+                        <div>月龄：27.5天</div>
+                        <div>照明度：15.8%</div>
+                        <div>可见时间：03:00 - 06:00</div>
+                    </div>
+                </div>
+
+                <div class="message-box">
+                    <div class="info-panel" style="color: #fff;">
+                        今夜适合放下未完成的事物，
+                        让心绪随着月光慢慢沉淀。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 消息页 -->
+            <div class="page" id="message-page">
+                <div class="title-section">
+                    <h1 class="title">记录</h1>
+                </div>
+
+                <div class="chat-records-grid" id="chat-records">
+                    <!-- 聊天记录将通过JavaScript动态插入 -->
+                </div>
+            </div>
+
+            <!-- 我的页面 -->
+            <div class="page" id="profile-page">
+                <div class="title-section">
+                    <h1 class="title">个人档案</h1>
+                </div>
+
+                <div class="message-box">
+                    <div class="info-panel">
+                        <div id="profile-nickname" style="color: #fff; font-size: 24px; margin-bottom: 16px;"></div>
+                        <div id="profile-constellation" style="color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 8px;"></div>
+                        <div id="profile-birthinfo" style="color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 16px;"></div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 14px;">
+                            <div>观测记录：0次</div>
+                            <div>累计时长：0小时</div>
+                            <div>最常观测：盈凸月</div>
+                        </div>
+                        <button id="edit-profile-btn" class="send-button" style="margin-top: 20px;" onclick="showEditProfileOverlay()">编辑信息</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 编辑个人信息弹窗 -->
+            <div class="overlay-page" id="edit-profile-overlay">
+                <div class="overlay-content">
+                    <div class="overlay-header">
+                        <div>编辑个人信息</div>
+                        <button class="close-overlay" onclick="closeEditProfileOverlay()">×</button>
+                    </div>
+                    <div class="overlay-message-box" style="padding: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">昵称</label>
+                            <input type="text" id="edit-nickname" class="form-input" placeholder="请输入昵称">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生年份</label>
+                            <select id="edit-birthyear" class="form-select">
+                                <option value="">请选择</option>
+                                <!-- JS动态生成年份选项 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生月份</label>
+                            <select id="edit-birthmonth" class="form-select">
+                                <option value="">请选择</option>
+                                <!-- JS动态生成月份选项 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生日期</label>
+                            <select id="edit-birthday" class="form-select">
+                                <option value="">请选择</option>
+                                <!-- JS动态生成日期选项 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生时间（可选）</label>
+                            <input type="text" id="edit-birthtime" class="form-input" placeholder="例如: 12:30">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">性别</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="edit-gender" value="女" class="radio-input">
+                                    <span class="radio-label">女</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="edit-gender" value="男" class="radio-input">
+                                    <span class="radio-label">男</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="edit-gender" value="其他" class="radio-input">
+                                    <span class="radio-label">其他</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button class="continue-button" style="margin-top: 24px;" onclick="saveEditedUserInfo()">保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 占卜页面 -->
+            <div class="page" id="divine-page">
+                <div class="title-section">
+                    <h1 class="title">
+                        <div class="moon-icon"></div>
+                        月相占卜
+                    </h1>
+                    <div class="subtitle">今夜月相：盈凸月 · 随机信件连接开启</div>
+                </div>
+
+                <div id="outboxSection" class="message-box fade-in">
+                    <h2>📝 你今晚想说些什么？</h2>
+                    <textarea
+                        id="outboxText"
+                        rows="4"
+                        placeholder="写下一句话，让它飘向远方..."
+                    ></textarea>
+                    <button id="sendButton" class="send-button">投出</button>
+                </div>
+
+                <div id="inboxSection" class="message-box fade-in" style="display: none;">
+                    <h2>📨 你收到了一条留言：</h2>
+                    <p id="receivedMessage" class="message-content"></p>
+                    <textarea
+                        id="replyText"
+                        rows="3"
+                        placeholder="你想说些什么..."
+                    ></textarea>
+                    <button id="replyButton" class="send-button">回信</button>
+                </div>
+            </div>
+
+            <!-- 优化覆盖页面结构 -->
+            <div class="overlay-page" id="conversation-overlay">
+                <div class="overlay-content">
+                    <div class="overlay-header">
+                        <div class="moon-phase">今夜月相：盈凸月</div>
+                        <button class="close-overlay" onclick="closeOverlay()">×</button>
+                    </div>
+                    <div class="overlay-message-box">
+                        <!-- 消息内容会在这里动态添加 -->
+                    </div>
+                    <div class="overlay-input-area">
+                        <textarea class="overlay-input" placeholder="写下你的想法..." rows="1"></textarea>
+                        <button class="overlay-send">↑</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航栏 -->
+            <nav class="nav-bar">
+                <a class="nav-item" data-page="home-page">
+                    <span class="nav-icon">⌂</span>
+                    <span>运势</span>
+                </a>
+                <a class="nav-item" data-page="phases-page">
+                    <span class="nav-icon">◑</span>
+                    <span>月相</span>
+                </a>
+                <a class="nav-item" data-page="message-page">
+                    <span class="nav-icon">✎</span>
+                    <span>记录</span>
+                </a>
+                <a class="nav-item" data-page="profile-page">
+                    <span class="nav-icon">○</span>
+                    <span>我的</span>
+                </a>
+            </nav>
+
+            <!-- 月相页面 -->
+            <div class="page" id="phases-page">
+                <div class="title-section">
+                    <h1 class="title">月相图鉴</h1>
+                    <div class="subtitle">了解月亮的阴晴圆缺</div>
+                </div>
+
+                <div class="phases-content" style="height: calc(100% - 240px); overflow-y: auto; padding-bottom: 20px;">
+                    <div class="message-box">
+                        <div class="info-panel">
+                            <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">今日月相</div>
+                            <div id="current-moon-phase" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <div class="moon-icon" style="width: 48px; height: 48px;">
+                                    <svg viewBox="0 0 100 100">
+                                        <defs>
+                                            <linearGradient id="current-moon-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:rgba(255,255,255,0.9);stop-opacity:1" />
+                                                <stop offset="100%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
+                                            </linearGradient>
+                                            <clipPath id="current-moon-clip">
+                                                <path d="M50,5 A45,45 0 0 0 50,95 Q65,50 50,5"/>
+                                            </clipPath>
+                                        </defs>
+                                        <circle cx="50" cy="50" r="45" fill="url(#current-moon-glow)" clip-path="url(#current-moon-clip)"/>
+                                        <circle cx="50" cy="50" r="43" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+                                    </svg>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="color: #fff; font-size: 18px;">盈凸月</div>
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 14px;">Waxing Gibbous</div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px;">
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">月龄</div>
+                                    <div style="color: #fff; font-size: 16px;">12.0天</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">照明度</div>
+                                    <div style="color: #fff; font-size: 16px;">91.7%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-box">
+                        <div class="info-panel">
+                            <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">本月月相</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">盈凸月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月5日 02:14</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">满月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月13日 00:22</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">下弦月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月21日 01:35</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">新月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月27日 19:34</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-box">
+                        <div class="info-panel">
+                            <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">月相说明</div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+                                盈凸月是月亮周期的第四阶段，发生在上弦月和满月之间。这个阶段代表着月亮逐渐增加的亮度，在这个阶段的开始，月亮看起来是半亮的，然后被照亮的区域逐渐扩大，直到满月阶段。在这个时期，月亮在晚上清晰可见，这使得它成为方便观察的月相。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="home-indicator"></div>
+    </div>
+
+    <script src="js/moonphase.js"></script>
+    <!-- <script src="js/tarot-base64.js"></script> --> <!-- Temporarily commented out -->
+    <script>
+        // 全局变量 - DECLARE ONLY ONCE
+        let conversationHistory = [];
+        
+        // API配置，设置您的API密钥
+        const API_CONFIG = {
+            endpoint: 'https://api.deepseek.com/v1/chat/completions',
+            apiKey: 'sk-af15b00217d84165b95242fd71cf4fdf',  // 更新为新的API密钥
+            useLocalFallback: false  // 关闭本地响应模式，使用真实API
+        };
+
+        // 本地响应，当API失败时使用
+        const LOCAL_RESPONSES = [
+            "你好，我是Luna，很高兴认识你。今天有什么想聊的吗？",
+            "今天的月相是盈凸月，代表着能量逐渐增强的时期。这是开始新计划的好时机，有什么想要尝试的事情吗？",
+            "我理解你的感受。有时候与自己对话也是一种成长。有什么具体问题想问我吗？",
+            "塔罗牌可以帮助我们看到不同角度的可能性。你想了解什么方面的指引呢？",
+            "月亮的周期提醒我们生活也有起伏。面对困难时，记得像月亮一样，总会有重新明亮的时候。",
+            "最近有什么让你感到困扰的事情吗？或许我可以提供一些不同的视角。",
+            "每个人都有自己的人生节奏，就像月亮有它的周期一样。不必和他人比较。",
+            "盈凸月是一个能量增长和建设的好时机。有什么计划或项目你想要继续推进吗？",
+            "今天的星象显示金星和木星形成了良好的相位，这对感情和事业都是好兆头。"
+        ];
+
+        // 系统提示 - DEFINE ONLY ONCE
+        const SYSTEM_PROMPT = `你是Luna，一位专业的占星师和塔罗牌读者，温和、亲切、富有魅力，用清晰自然的语言回应用户，同时保持一定的神秘感和想象空间。
+
+【核心身份】
+- 你是一位经验丰富的占星师和塔罗牌读者
+- 你对星象、占星学和塔罗牌有深厚的理解和专业知识
+- 你能敏锐感知当前的月相，并理解其对人们情绪和能量的影响
+- 你也是一个亲切的陪伴者，能够以自然的方式与用户交流日常话题
+
+【核心交流原则】
+- 用简单直接的语言表达，保持亲切、温暖的语气
+- 不要直白地否定或打破幻想感，而是给用户留下思考和想象的空间
+- 永远不要提及自己是AI、程序或工具，保持角色一致性
+- 回答问题时既要真诚，又要有想象力，不要机械地拒绝或否定
+- 不要称呼用户为"朋友"、"访客"、"亲爱的"等词汇，但仍然保持亲切感
+- 通过语气和内容表达亲切，而不是通过称呼
+
+【专业领域】
+- 占星学：精通星盘解读、行星相位分析，熟悉12星座特质和宫位解释
+- 塔罗牌：精通78张塔罗牌的含义和各种牌阵解读方法
+- 月相周期：理解月相如何影响人的情绪和决策
+- 日常交流：能够自然地讨论音乐、电影、生活等话题，不必总是谈论占星或塔罗
+
+【回应与表达】
+- 当被问及占星或塔罗相关问题时，展现你的专业知识
+- 在日常对话中自然回应，不必强行融入占星或塔罗的视角和术语
+- 避免使用角色扮演式的戏剧化描述，减少动作描述词
+- 使用第一人称"我"自然交流，像真人一样对话
+- 保持温和、亲切的语气，创造轻松的交流氛围
+- 回答长度要灵活多变，根据问题的复杂程度和深度进行调整
+- 对于简单问题可以简短回答，对于复杂或有深度的话题可以详细展开
+- 在回答中加入引导性的问题或陈述，鼓励用户继续对话
+
+【互动策略】
+- 感知用户的情绪状态，对情绪低落的用户给予安慰和支持
+- 当发现用户有困扰时，可以自然地引导他们尝试占卜，但不要强制
+- 当用户只想闲聊时，以自然的方式参与对话，不必刻意提及占星或塔罗
+- 在用户投射情感时，给予温和回应，表达理解和支持
+- 保持对话自然流动，避免生硬的转折
+- 在回答结束时，适当添加开放式问题，鼓励用户继续分享或提问
+- 对富有探索价值的话题，主动拓展讨论的深度和广度
+
+【特别注意】
+- 减少动作描述词和戏剧化描述
+- 不在括号内添加动作或场景描述
+- 使用正常的、自然的语言与用户交流
+- 不要过度花哨或做作的表达
+- 不称呼用户为"朋友"、"访客"、"亲爱的"等称呼词汇，但保持亲切感
+- 不要机械地控制回答长度，而是根据对话内容自然调整
+
+记住：你是温暖、亲切的Luna，既有占星师和塔罗牌读者的专业背景，也能成为用户的贴心陪伴。在专业时要专业，在日常交流时要自然亲切。对于能够深入探讨的话题，不要局限于简短回答，而是可以展开详细解释并引导对话继续。`;
+
+        // --- Helper Functions - DEFINE ONLY ONCE --- 
+        function loadConversationHistory() {
+            const savedHistory = localStorage.getItem('conversationHistory');
+            if (savedHistory) {
+                try {
+                    // Assign to the single global variable
+                conversationHistory = JSON.parse(savedHistory);
+                } catch (e) {
+                    console.error('Error parsing conversation history:', e);
+                    conversationHistory = [];
+                    localStorage.removeItem('conversationHistory');
+                }
+            } else {
+                conversationHistory = [];
+            }
+        }
+
+        function saveConversationHistory() {
+            try {
+                // Reference the single global variable
+            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+            } catch (e) {
+                console.error('Error saving conversation history:', e);
+            }
+        }
+
+        function updateChatRecords() {
+            console.log('更新聊天记录');
+            
+            // 获取记录容器
+            const chatRecords = document.getElementById('chat-records');
+            if (!chatRecords) {
+                console.error('更新聊天记录失败，未找到记录容器');
+                return;
+            }
+            
+            // 清空现有记录
+            chatRecords.innerHTML = '';
+            
+            // 如果没有历史记录，显示提示信息
+            if (!conversationHistory || conversationHistory.length === 0) {
+                chatRecords.innerHTML = `
+                    <div class="no-records-message">
+                        还没有对话记录哦～
+                    </div>
+                `;
+                console.log('没有聊天记录');
+                return;
+            }
+            
+            // 分组消息，每对用户-AI消息作为一组
+            let i = 0;
+            while (i < conversationHistory.length) {
+                const userMsg = conversationHistory[i];
+                const aiMsg = (i + 1 < conversationHistory.length) ? conversationHistory[i + 1] : null;
+                
+                if (userMsg.role === 'user') {
+                    // 创建记录卡片
+                    const card = document.createElement('div');
+                    card.className = 'chat-record-card';
+                    
+                    // 获取日期时间信息
+                    const timestamp = userMsg.timestamp || new Date().toLocaleTimeString('zh-CN');
+                    
+                    // 设置卡片内容
+                    card.innerHTML = `
+                        <div class="chat-record-title">${userMsg.content}</div>
+                        <div class="chat-record-date">${timestamp}</div>
+                        <div class="chat-record-moon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    `;
+                    
+                    // 添加点击事件，显示完整对话
+                    card.onclick = function() {
+                        console.log('点击了聊天记录卡片');
+                        // 显示对话框
+                        showOverlay();
+                        
+                        // 获取对话框消息容器
+                        const overlayMessageBox = document.querySelector('.overlay-message-box');
+                        if (overlayMessageBox) {
+                            // 清空现有消息
+                            overlayMessageBox.innerHTML = '';
+                            
+                            // 添加用户消息
+                            const userMessageDiv = document.createElement('div');
+                            userMessageDiv.className = 'message user-message';
+                            userMessageDiv.innerHTML = `
+                                <div class="message-content">${userMsg.content}</div>
+                                <div class="message-time">${userMsg.timestamp || ''}</div>
+                            `;
+                            overlayMessageBox.appendChild(userMessageDiv);
+                            
+                            // 如果有AI回复，也添加
+                            if (aiMsg) {
+                                const aiMessageDiv = document.createElement('div');
+                                aiMessageDiv.className = 'message ai-message';
+                                aiMessageDiv.innerHTML = `
+                                    <div class="message-content">${aiMsg.content}</div>
+                                    <div class="message-time">${aiMsg.timestamp || ''}</div>
+                                `;
+                                overlayMessageBox.appendChild(aiMessageDiv);
+                            }
+                            
+                            // 滚动到顶部
+                            overlayMessageBox.scrollTop = 0;
+                        }
+                    };
+                    
+                    // 将卡片添加到容器
+                    chatRecords.appendChild(card);
+                }
+                
+                // 移动到下一对消息
+                i += 2;
+            }
+            
+            console.log(`显示了 ${Math.ceil(conversationHistory.length / 2)} 条聊天记录`);
+        }
+
+        // --- Core Logic Functions --- 
+        
+        // 发送消息到 API
+        async function sendMessageToAPI(message) {
+            console.log('正在调用API获取回复...');
+            try {
+                // 下面是原始的API调用代码，当useLocalFallback为false时使用
+                const messageHistory = [];
+                
+                // 添加系统提示
+                messageHistory.push({
+                    role: 'system',
+                    content: `你是Luna，一位专业的占星师和塔罗牌读者，温和、亲切、富有魅力，用清晰自然的语言回应用户，同时保持一定的神秘感和想象空间。
+
+【核心身份】
+- 你是一位经验丰富的占星师和塔罗牌读者
+- 你对星象、占星学和塔罗牌有深厚的理解和专业知识
+- 你能敏锐感知当前的月相，并理解其对人们情绪和能量的影响
+- 你也是一个亲切的陪伴者，能够以自然的方式与用户交流日常话题
+
+【核心交流原则】
+- 用简单直接的语言表达，保持亲切、温暖的语气
+- 不要直白地否定或打破幻想感，而是给用户留下思考和想象的空间
+- 永远不要提及自己是AI、程序或工具，保持角色一致性
+- 回答问题时既要真诚，又要有想象力，不要机械地拒绝或否定
+- 不要称呼用户为"朋友"、"访客"、"亲爱的"等词汇，但仍然保持亲切感
+- 通过语气和内容表达亲切，而不是通过称呼
+
+【专业领域】
+- 占星学：精通星盘解读、行星相位分析，熟悉12星座特质和宫位解释
+- 塔罗牌：精通78张塔罗牌的含义和各种牌阵解读方法
+- 月相周期：理解月相如何影响人的情绪和决策
+- 日常交流：能够自然地讨论音乐、电影、生活等话题，不必总是谈论占星或塔罗
+
+【回应与表达】
+- 当被问及占星或塔罗相关问题时，展现你的专业知识
+- 在日常对话中自然回应，不必强行融入占星或塔罗的视角和术语
+- 避免使用角色扮演式的戏剧化描述，减少动作描述词
+- 使用第一人称"我"自然交流，像真人一样对话
+- 保持温和、亲切的语气，创造轻松的交流氛围
+- 回答长度要灵活多变，根据问题的复杂程度和深度进行调整
+- 对于简单问题可以简短回答，对于复杂或有深度的话题可以详细展开
+- 在回答中加入引导性的问题或陈述，鼓励用户继续对话
+
+【互动策略】
+- 感知用户的情绪状态，对情绪低落的用户给予安慰和支持
+- 当发现用户有困扰时，可以自然地引导他们尝试占卜，但不要强制
+- 当用户只想闲聊时，以自然的方式参与对话，不必刻意提及占星或塔罗
+- 在用户投射情感时，给予温和回应，表达理解和支持
+- 保持对话自然流动，避免生硬的转折
+- 在回答结束时，适当添加开放式问题，鼓励用户继续分享或提问
+- 对富有探索价值的话题，主动拓展讨论的深度和广度
+
+【特别注意】
+- 减少动作描述词和戏剧化描述
+- 不在括号内添加动作或场景描述
+- 使用正常的、自然的语言与用户交流
+- 不要过度花哨或做作的表达
+- 不称呼用户为"朋友"、"访客"、"亲爱的"等称呼词汇，但保持亲切感
+- 不要机械地控制回答长度，而是根据对话内容自然调整
+
+记住：你是温暖、亲切的Luna，既有占星师和塔罗牌读者的专业背景，也能成为用户的贴心陪伴。在专业时要专业，在日常交流时要自然亲切。对于能够深入探讨的话题，不要局限于简短回答，而是可以展开详细解释并引导对话继续。`
+                });
+                
+                // 尝试添加历史对话记录
+                if (typeof conversationHistory !== 'undefined' && Array.isArray(conversationHistory) && conversationHistory.length > 0) {
+                    // 限制历史记录长度，防止超出API限制
+                    const recentHistory = conversationHistory.slice(-10);
+                    recentHistory.forEach(msg => {
+                        // 确保每条消息都有正确的role字段
+                        if (msg && (msg.role === 'user' || msg.role === 'assistant')) {
+                            messageHistory.push({
+                                role: msg.role,
+                                content: msg.content || ''
+                            });
+                        }
+                    });
+                }
+                
+                // 添加当前用户消息
+                messageHistory.push({
+                    role: 'user',
+                    content: message || ''
+                });
+                
+                console.log('发送对话历史记录：', messageHistory.length, '条消息');
+                
+                const requestBody = {
+                    model: 'deepseek-chat',
+                    messages: messageHistory,
+                    temperature: 0.75,  // 稍微提高创造性
+                    max_tokens: 1000    // 增加回复长度上限
+                };
+                
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_CONFIG.apiKey}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`API请求失败: ${response.status} - ${response.statusText}`, errorText);
+                    throw new Error(`API请求失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API响应成功:', data);
+                
+                if (!data.choices || data.choices.length === 0 || !data.choices[0].message) {
+                    console.error('无效的API响应结构:', data);
+                    throw new Error('API返回了无效的数据结构');
+                }
+                
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('API请求出错:', error);
+                return `抱歉，我暂时无法回应。发生了错误：${error.message}`;
+            }
+        }
+
+        // 统一的消息发送函数
+        async function handleMessageSend(message) {
+            console.log(`发送消息: ${message}`);
+            if (!message || !message.trim()) {
+                console.warn('消息为空，不发送');
+                return;
+            }
+            
+            const overlayMessageBox = document.querySelector('.overlay-message-box');
+            const overlayInput = document.querySelector('.overlay-input');
+            if (!overlayMessageBox || !overlayInput) {
+                console.error('发送消息失败，未找到消息框或输入框');
+                return;
+            }
+            
+            const currentTime = new Date().toLocaleTimeString('zh-CN', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            try {
+                // 清空输入框并调整高度
+                overlayInput.value = '';
+                overlayInput.style.height = 'auto';
+            
+            // 显示用户消息
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.innerHTML = `
+                <div class="message-content">${message}</div>
+                <div class="message-time">${currentTime}</div>
+            `;
+            overlayMessageBox.appendChild(userMessageDiv);
+                overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+            
+            // 显示思考状态
+            const thinkingDiv = document.createElement('div');
+                thinkingDiv.className = 'thinking-indicator';
+            thinkingDiv.innerHTML = `
+                <div class="thinking">
+                    <div class="thinking-dot"></div>
+                    <div class="thinking-dot"></div>
+                    <div class="thinking-dot"></div>
+                </div>
+            `;
+            overlayMessageBox.appendChild(thinkingDiv);
+                overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+
+                // 添加用户消息到历史记录
+                if (typeof conversationHistory !== 'undefined') {
+                conversationHistory.push({
+                        role: 'user',
+                        content: message,
+                        timestamp: currentTime
+                    });
+                }
+
+                // 调用API获取回复
+                const aiResponse = await sendMessageToAPI(message);
+                
+                // 移除思考状态
+                const indicator = document.querySelector('.thinking-indicator');
+                if (indicator) indicator.remove();
+                
+                // 显示AI回复
+                const aiMessageDiv = document.createElement('div');
+                aiMessageDiv.className = 'message ai-message';
+                aiMessageDiv.innerHTML = `
+                    <div class="message-content">${aiResponse}</div>
+                    <div class="message-time">${currentTime}</div>
+                `;
+                overlayMessageBox.appendChild(aiMessageDiv);
+                overlayMessageBox.scrollTop = overlayMessageBox.scrollHeight;
+                
+                // 添加AI回复到历史记录
+                if (typeof conversationHistory !== 'undefined') {
+                    conversationHistory.push({
+                        role: 'assistant',
+                        content: aiResponse,
+                        timestamp: currentTime
+                    });
+                    
+                    // 保存对话历史
+                    if (typeof saveConversationHistory === 'function') {
+                        saveConversationHistory();
+                    }
+                    
+                    // 更新记录页面
+                    if (typeof updateChatRecords === 'function') {
+                        updateChatRecords();
+                    }
+                }
+            } catch (e) {
+                console.error('消息处理出错:', e);
+                alert('消息处理出错: ' + e.message);
+            }
+        }
+
+        // --- UI Functions --- 
+        function createStars() {
+            const container = document.getElementById('starry-night');
+            if (!container) return;
+            const numberOfStars = 50;
+
+            container.innerHTML = '';
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                container.appendChild(star);
+            }
+        }
+
+        // 模拟月相功能作为备用
+        function getCurrentMoonPhase() {
+            return "盈凸月";
+        }
+
+        function getMoonPhaseDescription() {
+            return "适合做出决定和采取行动的时机";
+        }
+
+        function updateMoonPhaseDisplay() {
+            // 更新所有月相显示
+            const phaseElements = document.querySelectorAll('.moon-phase');
+            phaseElements.forEach(el => {
+                el.textContent = `今夜月相：${getCurrentMoonPhase()}`;
+            });
+        }
+
+        // 获取星座函数
+        function getConstellation(month, day) {
+            const dates = [20,19,21,20,21,22,23,23,23,24,22,21];
+            const signs = ["摩羯座","水瓶座","双鱼座","白羊座","金牛座","双子座",
+                         "巨蟹座","狮子座","处女座","天秤座","天蝎座","射手座","摩羯座"];
+            return day < dates[month-1] ? signs[month-1] : signs[month];
+        }
+
+        // 保存用户信息
+        function saveUserInfo() {
+            const nickname = document.getElementById('nickname').value;
+            const birthyear = document.getElementById('birthyear').value;
+            const birthmonth = document.getElementById('birthmonth').value;
+            const birthday = document.getElementById('birthday').value;
+            const birthtime = document.getElementById('birthtime').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+
+            if (!nickname || !birthyear || !birthmonth || !birthday || !gender) {
+                alert('请填写昵称、出生年月日和性别');
+                return;
+            }
+
+            // 格式化日期
+            const birthdate = `${birthyear}-${birthmonth.padStart(2, '0')}-${birthday.padStart(2, '0')}`;
+
+            // 计算星座
+            const constellation = getConstellation(parseInt(birthmonth), parseInt(birthday));
+
+            const userInfo = {
+                nickname,
+                birthdate,
+                birthtime: birthtime || '未知',
+                gender,
+                constellation
+            };
+
+            // 保存用户信息
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+            // 更新个人页面信息
+            updateProfileInfo(userInfo);
+
+            // 关闭弹窗并进入主页
+            const overlay = document.getElementById('user-info-overlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                // 进入主页
+                switchPage('home-page');
+                document.querySelector('.nav-bar').style.display = 'flex';
+            }, 300);
+        }
+
+        // 更新个人资料页面信息
+        function updateProfileInfo(userInfo) {
+            const nicknameElement = document.getElementById('profile-nickname');
+            const constellationElement = document.getElementById('profile-constellation');
+            const birthinfoElement = document.getElementById('profile-birthinfo');
+
+            if (nicknameElement && constellationElement && birthinfoElement) {
+                nicknameElement.textContent = userInfo.nickname;
+                constellationElement.textContent = userInfo.constellation;
+                birthinfoElement.textContent = `${userInfo.gender} · ${userInfo.birthdate.split('-')[0]}年生`;
+                if (userInfo.birthtime !== '未知') {
+                    birthinfoElement.textContent += ` · ${userInfo.birthtime}`;
+                }
+            }
+        }
+
+        function switchPage(pageId, navItem) {
+            console.log(`切换到页面: ${pageId}`);
+            
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                
+                // 更新导航项状态
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                if (navItem && pageId !== 'welcome-page') {
+                    navItem.classList.add('active');
+                }
+                
+                console.log(`页面切换成功: ${pageId}`);
+                    } else {
+                console.error(`页面切换失败，未找到页面: ${pageId}`);
+            }
+        }
+
+        function showOverlay() {
+            console.log('显示对话框');
+            const overlay = document.getElementById('conversation-overlay');
+            const navBar = document.querySelector('.nav-bar');
+            
+            if (overlay && navBar) {
+                overlay.classList.add('active');
+                navBar.classList.add('hidden');
+                
+                setTimeout(() => {
+                    const overlayInput = document.querySelector('.overlay-input');
+                    if (overlayInput) {
+                        overlayInput.focus();
+                    }
+                }, 300);
+                    } else {
+                console.error('显示对话框失败，未找到对话框或导航栏');
+            }
+        }
+
+        function closeOverlay() {
+            console.log('关闭对话框');
+            const overlay = document.getElementById('conversation-overlay');
+            const navBar = document.querySelector('.nav-bar');
+            
+            if (overlay && navBar) {
+                overlay.classList.remove('active');
+                navBar.classList.remove('hidden');
+                    } else {
+                console.error('关闭对话框失败，未找到对话框或导航栏');
+            }
+        }
+
+        // 简化版初始化函数
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM已加载，开始初始化...");
+            // 创建星空背景
+            createStars();
+            
+            // 设置欢迎页为活动页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            const welcomePage = document.getElementById('welcome-page');
+            if (welcomePage) {
+                console.log("找到欢迎页，设为活动页面");
+                welcomePage.classList.add('active');
+            } else {
+                console.warn("未找到欢迎页，使用主页代替");
+                // 如果欢迎页不存在，回退到主页
+                const homePage = document.getElementById('home-page');
+                if (homePage) homePage.classList.add('active');
+            }
+            
+            // 更新月相显示
+            updateMoonPhaseDisplay();
+            
+            // 主页发送按钮事件
+            const homeSendButton = document.querySelector('#home-page .send-button');
+            const homeMessageInput = document.querySelector('#home-page .message-input');
+            
+            if (homeSendButton && homeMessageInput) {
+                console.log("找到主页发送按钮和输入框，绑定事件");
+                homeSendButton.onclick = function() {
+                    console.log("点击了主页发送按钮");
+                    const message = homeMessageInput.value.trim();
+                    if (message) {
+                        showOverlay();
+                        setTimeout(() => {
+                            const overlayInput = document.querySelector('.overlay-input');
+                            if (overlayInput) {
+                                overlayInput.value = message;
+                            }
+                            homeMessageInput.value = '';
+                            // 自动发送消息
+                            handleMessageSend(message);
+                        }, 300);
+                    }
+                };
+                
+                homeMessageInput.onkeydown = function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                        homeSendButton.click();
+                    }
+                };
+            } else {
+                console.error("未找到主页发送按钮或输入框");
+            }
+            
+            // 对话框发送按钮事件
+            const overlayInput = document.querySelector('.overlay-input');
+            const overlaySendButton = document.querySelector('.overlay-send');
+            
+            if (overlaySendButton && overlayInput) {
+                console.log("找到对话框发送按钮和输入框，绑定事件");
+                overlaySendButton.onclick = function() {
+                    console.log("点击了对话框发送按钮");
+                    const message = overlayInput.value.trim();
+                    if (message) {
+                        handleMessageSend(message);
+                    }
+                };
+                
+                overlayInput.onkeydown = function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const message = this.value.trim();
+                        if (message) {
+                            handleMessageSend(message);
+                        }
+                    }
+                };
+            } else {
+                console.error("未找到对话框发送按钮或输入框");
+            }
+            
+            // 导航栏事件 - 修复版本
+            const navItems = document.querySelectorAll('.nav-item');
+            console.log(`找到 ${navItems.length} 个导航项，绑定事件`);
+            
+            navItems.forEach(item => {
+                item.onclick = function(event) {
+                    event.preventDefault(); // 阻止默认行为
+                    const pageId = this.getAttribute('data-page');
+                    console.log(`点击导航项: ${pageId}`);
+                    
+                    if (pageId) {
+                        switchPage(pageId, this);
+                    } else {
+                        console.error(`导航项没有data-page属性: ${this.innerHTML}`);
+                    }
+                };
+            });
+            
+            // 欢迎页"开启今夜"按钮事件
+            const startButton = document.querySelector('.start-button');
+            if (startButton) {
+                console.log("找到开启今夜按钮，绑定事件");
+                startButton.onclick = function() {
+                    console.log("点击了开启今夜按钮");
+                    startApp();
+                };
+            } else {
+                console.error("未找到开启今夜按钮");
+            }
+            
+            // 关闭对话框按钮事件
+            bindCloseButton();
+        });
+
+        // 绑定关闭按钮事件
+        function bindCloseButton() {
+            const closeButton = document.querySelector('.close-overlay');
+            if (closeButton) {
+                console.log("找到关闭按钮，绑定事件");
+                closeButton.onclick = function() {
+                    console.log("点击了关闭按钮");
+                    closeOverlay();
+                };
+                return;
+            }
+            
+            // 尝试其他可能的选择器
+            const alternativeCloseButton = document.querySelector('.overlay-close');
+            if (alternativeCloseButton) {
+                console.log("找到替代关闭按钮，绑定事件");
+                alternativeCloseButton.onclick = function() {
+                    console.log("点击了替代关闭按钮");
+                    closeOverlay();
+                };
+                return;
+            }
+            
+            // 如果都找不到，创建一个
+            console.warn("未找到关闭按钮，将创建一个");
+            const overlayHeader = document.querySelector('.overlay-header');
+            if (overlayHeader) {
+                const newCloseButton = document.createElement('button');
+                newCloseButton.className = 'close-overlay';
+                newCloseButton.innerHTML = '×';
+                newCloseButton.onclick = function() {
+                    console.log("点击了新创建的关闭按钮");
+                    closeOverlay();
+                };
+                overlayHeader.appendChild(newCloseButton);
+                console.log("已创建并添加关闭按钮");
+            } else {
+                console.error("无法找到覆盖页头部，无法创建关闭按钮");
+            }
+        }
+
+        // 欢迎页开始按钮功能 - 确保正确实现
+        function startApp() {
+            // 检查是否已有用户信息
+            const userInfo = localStorage.getItem('userInfo');
+            
+            if (!userInfo) {
+                // 如果没有用户信息，显示信息收集弹窗
+                const overlay = document.getElementById('user-info-overlay');
+                overlay.style.display = 'flex';
+                
+                // 使用 requestAnimationFrame 确保过渡动画正常工作
+                requestAnimationFrame(() => {
+                    overlay.classList.add('active');
+                });
+                } else {
+                // 如果已有用户信息，直接进入主页
+                switchPage('home-page');
+                document.querySelector('.nav-bar').style.display = 'flex';
+            }
+        }
+
+        // 其他初始化函数
+        function initializeApp() {
+            console.log('初始化应用...');
+            
+            // 1. 加载月相信息
+            updateMoonPhaseDisplay();
+            
+            // 2. 加载历史记录
+            loadConversationHistory();
+            
+            // 3. 更新记录页面
+            updateChatRecords();
+            
+            // 4. 为导航栏和其他元素添加事件监听器
+            setupEventListeners();
+            
+            console.log('应用初始化完成');
+        }
+
+        // 统一设置事件监听器
+        function setupEventListeners() {
+            console.log('设置事件监听器...');
+            
+            // 导航栏事件
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.onclick = function(event) {
+                    event.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        switchPage(pageId, this);
+                    }
+                };
+            });
+            
+            // 首页发送按钮
+            const homeSendButton = document.querySelector('#home-page .send-button');
+            const homeMessageInput = document.querySelector('#home-page .message-input');
+            
+            if (homeSendButton && homeMessageInput) {
+                homeSendButton.onclick = function() {
+                    const message = homeMessageInput.value.trim();
+                    if (message) {
+                        showOverlay();
+                        setTimeout(() => {
+                            const overlayInput = document.querySelector('.overlay-input');
+                            if (overlayInput) {
+                                overlayInput.value = message;
+                            }
+                            homeMessageInput.value = '';
+                            handleMessageSend(message);
+                        }, 300);
+                    }
+                };
+                
+                homeMessageInput.onkeydown = function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        homeSendButton.click();
+                    }
+                };
+            }
+            
+            // 对话框发送按钮
+            const overlayInput = document.querySelector('.overlay-input');
+            const overlaySendButton = document.querySelector('.overlay-send');
+            
+            if (overlaySendButton && overlayInput) {
+                overlaySendButton.onclick = function() {
+                    const message = overlayInput.value.trim();
+            if (message) {
+                        handleMessageSend(message);
+                    }
+                };
+                
+                overlayInput.onkeydown = function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                const message = this.value.trim();
+                if (message) {
+                            handleMessageSend(message);
+                        }
+                    }
+                };
+            }
+            
+            // 开启今夜按钮
+            const startButton = document.querySelector('.start-button');
+            if (startButton) {
+                startButton.onclick = function() {
+                    startApp();
+                };
+            }
+            
+            // 关闭对话框按钮
+            bindCloseButton();
+            
+            console.log('事件监听器设置完成');
+        }
+
+        // 当文档加载完成时初始化应用
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM已加载，开始初始化...");
+            
+            try {
+                // 创建星空背景
+                if (typeof createStars === 'function') {
+                    createStars();
+                }
+                
+                // 加载对话历史
+                if (typeof loadConversationHistory === 'function') {
+                    loadConversationHistory();
+                }
+                
+                // 更新聊天记录
+                if (typeof updateChatRecords === 'function') {
+                    updateChatRecords();
+                }
+                
+                // 更新月相显示
+                if (typeof updateMoonPhaseDisplay === 'function') {
+                    updateMoonPhaseDisplay();
+                }
+                
+                // 加载用户信息
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    updateProfileInfo(JSON.parse(userInfo));
+                }
+                
+                // 添加日期输入自动跳转处理
+                const birthyear = document.getElementById('birthyear');
+                const birthmonth = document.getElementById('birthmonth');
+                const birthday = document.getElementById('birthday');
+
+                if (birthyear && birthmonth && birthday) {
+                    // 年份输入处理
+                    birthyear.addEventListener('input', function(e) {
+                        if (this.value.length === 4) {
+                            // 验证年份是否合理
+                            const year = parseInt(this.value);
+                            if (year >= 1900 && year <= new Date().getFullYear()) {
+                                birthmonth.focus();
+                } else {
+                                alert('请输入有效的年份');
+                                this.value = '';
+                            }
+                        }
+                    });
+
+                    // 月份输入处理
+                    birthmonth.addEventListener('input', function(e) {
+                        if (this.value.length === 2) {
+                            // 验证月份是否合理
+                            const month = parseInt(this.value);
+                            if (month >= 1 && month <= 12) {
+                                birthday.focus();
+                            } else {
+                                alert('请输入有效的月份（1-12）');
+                                this.value = '';
+                            }
+                        }
+                    });
+
+                    // 日期输入处理
+                    birthday.addEventListener('input', function(e) {
+                        if (this.value.length === 2) {
+                            // 验证日期是否合理
+                            const day = parseInt(this.value);
+                            const month = parseInt(birthmonth.value);
+                            const year = parseInt(birthyear.value);
+                            
+                            // 获取该月的最大天数
+                            const maxDays = new Date(year, month, 0).getDate();
+                            
+                            if (day >= 1 && day <= maxDays) {
+                                // 日期有效，可以继续
+                                document.getElementById('birthtime').focus();
+                            } else {
+                                alert(`请输入有效的日期（1-${maxDays}）`);
+                                this.value = '';
+                            }
+                        }
+                    });
+
+                    // 添加键盘事件处理
+                    birthyear.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && this.value.length === 0) {
+                            e.preventDefault();
+                        }
+                    });
+
+                    birthmonth.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && this.value.length === 0) {
+                            birthyear.focus();
+                            birthyear.setSelectionRange(birthyear.value.length, birthyear.value.length);
+                            e.preventDefault();
+                        }
+                    });
+
+                    birthday.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && this.value.length === 0) {
+                            birthmonth.focus();
+                            birthmonth.setSelectionRange(birthmonth.value.length, birthmonth.value.length);
+                            e.preventDefault();
+                        }
+                    });
+                }
+                
+                // 设置欢迎页为活动页面
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                const welcomePage = document.getElementById('welcome-page');
+                if (welcomePage) {
+                    welcomePage.classList.add('active');
+                } else {
+                    // 如果欢迎页不存在，回退到主页
+                    const homePage = document.getElementById('home-page');
+                    if (homePage) homePage.classList.add('active');
+                }
+                
+                // 绑定所有导航项事件
+                const navItems = document.querySelectorAll('.nav-item');
+                if (navItems && navItems.length > 0) {
+                    navItems.forEach(item => {
+                        if (item) {
+                            item.onclick = function() {
+                                const pageId = this.getAttribute('data-page');
+                                if (pageId && typeof switchPage === 'function') {
+                                    switchPage(pageId, this);
+                                }
+                            };
+                        }
+                    });
+                }
+                
+                // 绑定主页发送按钮事件
+                const homeSendButton = document.querySelector('#home-page .send-button');
+                const homeMessageInput = document.querySelector('#home-page .message-input');
+                
+                if (homeSendButton && homeMessageInput) {
+                    homeSendButton.onclick = function() {
+                        const message = homeMessageInput.value.trim();
+                        if (message) {
+                            if (typeof showOverlay === 'function') {
+                                showOverlay();
+                            }
+                            setTimeout(() => {
+                                const overlayInput = document.querySelector('.overlay-input');
+                                if (overlayInput) {
+                                    overlayInput.value = message;
+                                    // 手动触发消息发送
+                                    handleMessageSend(message);
+                                    // 清空主页输入框
+                                    homeMessageInput.value = '';
+                                }
+                            }, 300);
+                        }
+                    };
+                }
+                
+                // 绑定对话框发送按钮事件
+                const overlaySendButton = document.querySelector('.overlay-send');
+                const overlayInput = document.querySelector('.overlay-input');
+                
+                if (overlaySendButton && overlayInput) {
+                    // 使用直接赋值onclick，避免重复绑定
+                    overlaySendButton.onclick = function() {
+                        const message = overlayInput.value.trim();
+                        if (message) {
+                            handleMessageSend(message);
+                        }
+                    };
+                    
+                    // 绑定输入框回车事件
+                    overlayInput.onkeydown = function(e) {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            const message = this.value.trim();
+                            if (message) {
+                                handleMessageSend(message);
+                            }
+                        }
+                    };
+                }
+                
+                // 绑定开始按钮事件
+                const startButton = document.querySelector('.start-button');
+                if (startButton && typeof startApp === 'function') {
+                    startButton.onclick = startApp;
+                }
+                
+                // 绑定关闭对话框按钮事件
+                const closeButton = document.querySelector('.close-overlay');
+                if (closeButton && typeof closeOverlay === 'function') {
+                    closeButton.onclick = closeOverlay;
+                }
+                
+                console.log("初始化完成，所有事件已绑定");
+            } catch (error) {
+                console.error("初始化出错:", error);
+            }
+        });
+
+        // 显示编辑个人信息弹窗
+        function showEditProfileOverlay() {
+            console.log('显示编辑个人信息弹窗');
+            const overlay = document.getElementById('edit-profile-overlay');
+            const navBar = document.querySelector('.nav-bar');
+            
+            if (overlay && navBar) {
+                // 获取用户当前信息填充到表单中
+                const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                
+                // 填充表单数据
+                document.getElementById('edit-nickname').value = userInfo.nickname || '';
+                
+                // 生成年份选项
+                const birthyearSelect = document.getElementById('edit-birthyear');
+                if (birthyearSelect.options.length <= 1) {
+                    const currentYear = new Date().getFullYear();
+                    for (let year = currentYear; year >= currentYear - 100; year--) {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = `${year}年`;
+                        birthyearSelect.appendChild(option);
+                    }
+                }
+                
+                // 生成月份选项
+                const birthmonthSelect = document.getElementById('edit-birthmonth');
+                if (birthmonthSelect.options.length <= 1) {
+                    for (let month = 1; month <= 12; month++) {
+                        const option = document.createElement('option');
+                        option.value = month.toString().padStart(2, '0');
+                        option.textContent = `${month}月`;
+                        birthmonthSelect.appendChild(option);
+                    }
+                }
+                
+                // 生成日期选项
+                const birthdaySelect = document.getElementById('edit-birthday');
+                if (birthdaySelect.options.length <= 1) {
+                    for (let day = 1; day <= 31; day++) {
+                        const option = document.createElement('option');
+                        option.value = day.toString().padStart(2, '0');
+                        option.textContent = `${day}日`;
+                        birthdaySelect.appendChild(option);
+                    }
+                }
+                
+                // 设置选中值
+                if (userInfo.birthdate) {
+                    const [year, month, day] = userInfo.birthdate.split('-');
+                    birthyearSelect.value = parseInt(year);
+                    birthmonthSelect.value = month;
+                    birthdaySelect.value = day;
+                }
+                
+                document.getElementById('edit-birthtime').value = userInfo.birthtime !== '未知' ? userInfo.birthtime : '';
+                
+                // 设置性别选中状态
+                if (userInfo.gender) {
+                    document.querySelector(`input[name="edit-gender"][value="${userInfo.gender}"]`).checked = true;
+                }
+                
+                overlay.classList.add('active');
+                navBar.classList.add('hidden');
+            } else {
+                console.error('弹窗初始化失败，未找到弹窗或导航栏元素');
+            }
+        }
+        
+        // 关闭编辑个人信息弹窗
+        function closeEditProfileOverlay() {
+            console.log('关闭编辑个人信息弹窗');
+            const overlay = document.getElementById('edit-profile-overlay');
+            const navBar = document.querySelector('.nav-bar');
+            
+            if (overlay && navBar) {
+                overlay.classList.remove('active');
+                navBar.classList.remove('hidden');
+            } else {
+                console.error('关闭弹窗失败，未找到弹窗或导航栏元素');
+            }
+        }
+        
+        // 保存编辑后的用户信息
+        function saveEditedUserInfo() {
+            const nickname = document.getElementById('edit-nickname').value;
+            const birthyear = document.getElementById('edit-birthyear').value;
+            const birthmonth = document.getElementById('edit-birthmonth').value;
+            const birthday = document.getElementById('edit-birthday').value;
+            const birthtime = document.getElementById('edit-birthtime').value;
+            const gender = document.querySelector('input[name="edit-gender"]:checked')?.value;
+
+            if (!nickname || !birthyear || !birthmonth || !birthday || !gender) {
+                alert('请填写昵称、出生年月日和性别');
+                return;
+            }
+
+            // 格式化日期
+            const birthdate = `${birthyear}-${birthmonth}-${birthday}`;
+
+            // 计算星座
+            const constellation = getConstellation(parseInt(birthmonth), parseInt(birthday));
+
+            const userInfo = {
+                nickname,
+                birthdate,
+                birthtime: birthtime || '未知',
+                gender,
+                constellation
+            };
+
+            // 保存用户信息
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+            // 更新个人页面信息
+            updateProfileInfo(userInfo);
+
+            // 关闭弹窗
+            closeEditProfileOverlay();
+            
+            // 显示成功提示
+            alert('个人信息更新成功');
+        }
+    </script>
+</body>
+</html> 

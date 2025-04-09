@@ -1,0 +1,22 @@
+{
+    "name": "夜间观察所",
+    "short_name": "观察所",
+    "description": "一个优雅的夜间观察与记录应用",
+    "start_url": "/app.html",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "images/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "images/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+} 

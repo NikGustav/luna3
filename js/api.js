@@ -1,8 +1,22 @@
 // API 配置
 const API_CONFIG = {
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
-    apiKey: 'sk-659ef63d2c084eb68f0fd8b6c25a5a01'
+    apiKey: 'sk-659ef63d2c084eb68f0fd8b6c25a5a01',
+    useLocalFallback: true  // 启用本地响应
 };
+
+// 本地响应，当API调用失败时使用
+const LOCAL_RESPONSES = [
+    "你好，我是Luna，很高兴认识你。今天有什么想聊的吗？",
+    "今天的月相是盈凸月，代表着能量逐渐增强的时期。这是开始新计划的好时机，有什么想要尝试的事情吗？",
+    "我理解你的感受。有时候与自己对话也是一种成长。有什么具体问题想问我吗？",
+    "塔罗牌可以帮助我们看到不同角度的可能性。你想了解什么方面的指引呢？",
+    "月亮的周期提醒我们生活也有起伏。面对困难时，记得像月亮一样，总会有重新明亮的时候。",
+    "最近有什么让你感到困扰的事情吗？或许我可以提供一些不同的视角。",
+    "每个人都有自己的人生节奏，就像月亮有它的周期一样。不必和他人比较。",
+    "盈凸月是一个能量增长和建设的好时机。有什么计划或项目你想要继续推进吗？",
+    "今天的星象显示金星和木星形成了良好的相位，这对感情和事业都是好兆头。"
+];
 
 // 系统提示词
 const SYSTEM_PROMPT = `你是Luna，一位专业的占星师和塔罗牌读者，温和、富有魅力，用清晰自然的语言回应用户，同时保持一定的神秘感和想象空间。
@@ -52,6 +66,14 @@ let conversationHistory = [];
 async function sendMessageToAPI(message) {
     try {
         console.log('开始发送请求:', message);
+        
+        // 如果使用本地响应模式，直接返回本地响应
+        if (API_CONFIG.useLocalFallback) {
+            console.log('使用本地响应');
+            // 随机选择一个回复
+            const randomIndex = Math.floor(Math.random() * LOCAL_RESPONSES.length);
+            return await simulateAPIResponse(LOCAL_RESPONSES[randomIndex]);
+        }
 
         const requestBody = {
             model: "deepseek-chat",
@@ -100,18 +122,27 @@ async function sendMessageToAPI(message) {
         return data.choices[0].message.content;
     } catch (error) {
         console.error('API 调用错误:', error);
-        // 如果API调用失败，返回占星师风格的回复
-        return "根据当前的星象，我感觉有些能量波动。或许我们稍后再继续我们的对话？";
+        // 如果API调用失败，返回本地响应
+        const randomIndex = Math.floor(Math.random() * LOCAL_RESPONSES.length);
+        return await simulateAPIResponse(LOCAL_RESPONSES[randomIndex]);
     }
+}
+
+// 模拟API响应延迟，让体验更自然
+async function simulateAPIResponse(response) {
+    // 随机延迟1-3秒，模拟思考时间
+    const delay = Math.floor(Math.random() * 2000) + 1000;
+    await new Promise(resolve => setTimeout(resolve, delay));
+    return response;
 }
 
 // 获取月相信息
 function getMoonPhase() {
     return {
-        phase: '残月',
-        age: '27.5天',
-        illumination: '15.8%',
-        visibility: '03:00 - 06:00'
+        phase: '盈凸月',
+        age: '12.0天',
+        illumination: '91.7%',
+        visibility: '18:00 - 04:00'
     };
 }
 

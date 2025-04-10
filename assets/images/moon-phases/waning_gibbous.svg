@@ -1,0 +1,11 @@
+
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <mask id="waning-gibbous-mask">
+      <rect width="100%" height="100%" fill="black"/>
+      <circle cx="250" cy="250" r="100" fill="white"/>
+      <circle cx="280" cy="250" r="80" fill="black"/>
+    </mask>
+  </defs>
+  <circle cx="250" cy="250" r="100" fill="white" mask="url(#waning-gibbous-mask)"/>
+</svg>

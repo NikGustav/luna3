@@ -650,6 +650,10 @@
             margin-left: auto;
             text-align: right;
             transform-origin: right bottom;
+            width: 100%; /* 确保整个容器占满宽度 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* 子元素靠右对齐 */
         }
 
         .user-message .message-content {
@@ -660,7 +664,8 @@
             display: inline-block; /* 使内容块只占用必要的宽度 */
             max-width: 85%; /* 最大宽度限制 */
             width: auto; /* 根据内容自动调整宽度 */
-            text-align: left; /* 文本左对齐 */
+            text-align: left; /* 消息内容左对齐 */
+            float: right; /* 确保消息框靠右 */
         }
 
         .ai-message .message-content {

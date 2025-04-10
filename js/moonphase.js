@@ -23,7 +23,7 @@ function getMoonPhase(date) {
     let phase;
     if (moonAge < 1.84566) phase = '新月';
     else if (moonAge < 5.53699) phase = '娥眉月';
-    else if (moonAge < 9.22831) phase = '上弦月';
+    else if (moonAge < 9.22831) phase = '盈凸月';
     else if (moonAge < 12.91963) phase = '盈凸月';
     else if (moonAge < 16.61096) phase = '满月';
     else if (moonAge < 20.30228) phase = '亏凸月';
@@ -41,7 +41,7 @@ function getMoonPhase(date) {
 
 // 计算未来月相时间
 function calculateNextPhases(date) {
-    const phases = ['新月', '上弦月', '满月', '下弦月'];
+    const phases = ['新月', '盈凸月', '满月', '下弦月'];
     const results = [];
     
     // 计算未来4个主要月相
@@ -99,6 +99,10 @@ function calculateMoonPath(phase) {
     const r = 28; // 月球半径
     const cx = 32; // 中心X坐标
     const cy = 32; // 中心Y坐标
+    
+    // 调整相位，确保盈凸月显示正确
+    // 盈凸月大约在0.25到0.5之间
+    phase = Math.max(0, Math.min(1, phase));
     
     if (phase <= 0.5) {
         // 从新月到满月

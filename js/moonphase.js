@@ -78,12 +78,32 @@ function updateMoonPhaseDisplay() {
         }
     });
 
-    // 更新所有月相图标
-    document.querySelectorAll('.moon-logo svg').forEach(moonIcon => {
-        const clipPath = moonIcon.querySelector('clipPath path');
-        if (clipPath) {
-            const d = calculateMoonPath(parseFloat(moonData.age) / 29.53058867);
-            clipPath.setAttribute('d', d);
+    // 根据月相名称获取对应的SVG文件名
+    let svgFileName;
+    switch(moonData.phase) {
+        case '新月': svgFileName = 'new-moon.svg'; break;
+        case '娥眉月': svgFileName = 'waxing-crescent.svg'; break;
+        case '上弦月': svgFileName = 'first-quarter.svg'; break;
+        case '盈凸月': svgFileName = 'waxing-gibbous.svg'; break;
+        case '满月': svgFileName = 'full-moon.svg'; break;
+        case '亏凸月': svgFileName = 'waning-gibbous.svg'; break;
+        case '下弦月': svgFileName = 'last-quarter.svg'; break;
+        case '残月': svgFileName = 'waning-crescent.svg'; break;
+        default: svgFileName = 'full-moon.svg';
+    }
+    
+    // 更新所有月相图标 - 使用自定义SVG
+    document.querySelectorAll('.moon-icon').forEach(moonIcon => {
+        if (moonIcon.querySelector('svg')) {
+            // 替换为外部SVG引用
+            moonIcon.innerHTML = `<img src="assets/images/moon-phases/${svgFileName}" class="moon-svg-image" alt="${moonData.phase}" style="width: 100%; height: 100%; object-fit: contain;">`;
+        }
+    });
+    
+    document.querySelectorAll('.moon-logo').forEach(moonLogo => {
+        if (moonLogo.querySelector('svg')) {
+            // 替换为外部SVG引用
+            moonLogo.innerHTML = `<img src="assets/images/moon-phases/${svgFileName}" class="moon-svg-image" alt="${moonData.phase}" style="width: 100%; height: 100%; object-fit: contain;">`;
         }
     });
 

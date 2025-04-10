@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今夜盈凸月</title>
+    <link rel="stylesheet" href="style-fix.css">
+    <link rel="stylesheet" href="css/message-fix.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Firefox滚动条样式 */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .iphone-frame {
+            position: relative;
+            width: 375px;
+            height: 812px;
+            background: #1A1A1A;
+            border-radius: 55px;
+            padding: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .notch {
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 100;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .starry-night {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { 
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.02);
+                background: rgba(255, 255, 255, 0.01);
+            }
+            50% { 
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+                background: rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 80px;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 2;
+            color: #fff;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            margin: 0;
+            padding: 15px 0;
+            letter-spacing: 1px;
+        }
+
+        .moon-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border-radius: 50%;
+            margin-right: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .moon-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 50%;
+            left: -25%;
+        }
+
+        .message-box {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            line-height: 1.5;
+            resize: none;
+            margin: 16px 0;
+            font-family: inherit;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-sizing: border-box;
+            caret-color: transparent;
+            cursor: default;
+            background: rgba(255, 255, 255, 0.03);
+            outline: none;
+        }
+
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border: none;
+            box-shadow: none;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .send-button {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.03);
+        }
+
+        .send-button:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .hint-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: none;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-bar.hidden {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+
+        .nav-item {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #fff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 135px;
+            height: 5px;
+            background: #fff;
+            border-radius: 3px;
+            z-index: 1001;
+        }
+
+        /* 欢迎页样式 */
+        .welcome-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+            margin-top: -80px;
+        }
+
+        .moon-logo {
+            width: 96px;
+            height: 96px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .moon-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .moon-stroke {
+            fill: white;
+            stroke: none;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .start-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            letter-spacing: 1px;
+        }
+
+        .start-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* 只在欢迎页面时隐藏导航栏 */
+        #welcome-page.active ~ .nav-bar {
+            display: none !important;
+        }
+
+        /* 导航栏基础样式 */
+        .nav-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: none;
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 对话框打开时隐藏导航栏 */
+        .nav-bar.hidden {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+
+        /* 确保在非欢迎页面时导航栏可见 */
+        .page:not(#welcome-page).active ~ .nav-bar {
+            display: flex !important;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 欢迎页面时隐藏home indicator */
+        body.welcome-active .home-indicator {
+            opacity: 0;
+        }
+
+        /* 当不在欢迎页面时显示home indicator */
+        body:not(.welcome-active) .home-indicator {
+            opacity: 1;
+        }
+
+        /* 主页样式 */
+        #home-page {
+            padding-top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        #home-page .title-section {
+            margin-bottom: 48px;
+            text-align: center;
+        }
+
+        #home-page .message-box {
+            text-align: center;
+            width: 85%;
+        }
+
+        #home-page .message-box > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+            width: 100%;
+        }
+
+        /* 观测页样式 */
+        #observe-page {
+            padding-top: 60px;
+        }
+
+        /* 消息页样式 */
+        #message-page {
+            padding: 60px 16px;
+        }
+
+        .chat-records-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px 0;
+        }
+
+        .chat-record-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-record-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-record-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-record-date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+        }
+
+        .chat-record-moon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 20px;
+            height: 20px;
+            opacity: 0.3;
+        }
+
+        .no-records-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 32px 16px;
+            font-size: 14px;
+        }
+
+        /* 个人页面样式 */
+        #profile-page {
+            padding-top: 60px;
+        }
+
+        .divine-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+
+        .divine-option {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.03);
+        }
+
+        .divine-option:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .option-icon {
+            font-size: 24px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-message {
+            color: #00ff00;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .received-message {
+            color: #ff0000;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .message-content {
+            margin-bottom: 16px;
+        }
+
+        .message {
+            margin: 24px 0;
+            max-width: 85%;
+            position: relative;
+            transform-origin: left bottom;
+            animation: messageAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .message-content {
+            padding: 16px 20px;
+            border-radius: 24px;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-message {
+            margin-left: auto;
+            text-align: right;
+            transform-origin: right bottom;
+            width: 100%; /* 确保整个容器占满宽度 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* 子元素靠右对齐 */
+        }
+
+        .user-message .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.95);
+            margin-left: auto;
+            border-bottom-right-radius: 8px;
+            display: inline-block; /* 使内容块只占用必要的宽度 */
+            max-width: 85%; /* 最大宽度限制 */
+            width: auto; /* 根据内容自动调整宽度 */
+            text-align: left; /* 消息内容左对齐 */
+            float: right; /* 确保消息框靠右 */
+        }
+
+        .ai-message .message-content {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.85);
+            margin-right: auto;
+            border-bottom-left-radius: 8px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+            background: none;
+            text-shadow: none;
+        }
+
+        /* 添加用户消息时间样式 */
+        .user-message .message-time {
+            text-align: right !important;
+            margin-left: auto !important;
+            margin-right: 8px !important;
+            float: right !important;
+            display: block !important;
+            width: 100% !important;
+            clear: both; /* 确保时间戳在消息内容下方 */
+        }
+
+        .message::before {
+            display: none;
+        }
+
+        .user-message::before {
+            display: none;
+        }
+
+        .ai-message::before {
+            display: none;
+        }
+
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            width: fit-content;
+            margin: 24px 0;
+        }
+
+        .thinking-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: thinkingDot 1.4s infinite;
+        }
+
+        .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes thinkingDot {
+            0%, 60%, 100% { transform: scale(0.7); opacity: 0.4; }
+            30% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 优化覆盖页面样式 */
+        .overlay-page {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 48px);
+            height: calc(100% - 96px);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.97));
+            border-radius: 32px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .overlay-page.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .overlay-page.active .overlay-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .overlay-header {
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .moon-phase {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .overlay-message-box {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            position: relative;
+            margin-bottom: 16px;
+            padding: 0 12px;
+        }
+
+        .overlay-message-box::-webkit-scrollbar {
+            display: none;
+        }
+
+        .overlay-input-area {
+            position: relative;
+            margin-top: auto;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 8px;
+            box-sizing: border-box;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border: none;
+            outline: none;
+        }
+
+        .overlay-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            padding: 6px 8px;
+            height: 32px;
+            min-height: 32px;
+            font-family: inherit;
+            margin: 0;
+            outline: none;
+        }
+
+        .overlay-input:focus {
+            outline: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        .overlay-send {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .overlay-send:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .close-overlay {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .close-overlay:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            transform: rotate(90deg);
+        }
+
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .phase-item {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .phase-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .phase-item:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-item:hover::before {
+            opacity: 1;
+        }
+
+        .moon-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            padding: 6px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .moon-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .phase-item:hover .moon-icon {
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+            transform: scale(1.03);
+        }
+
+        .moon-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.05));
+        }
+
+        .phase-name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .phase-desc {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .phases-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .phases-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .page::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .page::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .page::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .phases-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .phases-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .phases-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        div[style*="background: rgba(255,255,255,0.05)"] {
+            border: none !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 自定义滚动条样式 */
+        .overlay-message-box::-webkit-scrollbar,
+        .page::-webkit-scrollbar,
+        .phases-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .overlay-message-box::-webkit-scrollbar-track,
+        .page::-webkit-scrollbar-track,
+        .phases-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .overlay-message-box::-webkit-scrollbar-thumb,
+        .page::-webkit-scrollbar-thumb,
+        .phases-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .overlay-message-box::-webkit-scrollbar-thumb:hover,
+        .page::-webkit-scrollbar-thumb:hover,
+        .phases-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Firefox滚动条样式 */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        /* 用户信息收集页面样式 */
+        .user-info-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            color: #fff;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .info-form {
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M6 8L2 4h8z'/%3E%3C/svg%3E") no-repeat right 16px center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-input:checked::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radio-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .continue-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .continue-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 用户信息弹窗样式 */
+        .user-info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-info-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .user-info-modal {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 90%;
+            max-width: 320px;
+            margin: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .user-info-overlay.active .user-info-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .info-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M6 8L2 4h8z'/%3E%3C/svg%3E") no-repeat right 16px center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-input:checked::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radio-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .continue-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .continue-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 编辑个人信息弹窗样式 */
+        .edit-profile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .edit-profile-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .edit-profile-modal {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 90%;
+            max-width: 320px;
+            margin: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .edit-profile-overlay.active .edit-profile-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .edit-profile-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .edit-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .edit-form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .edit-form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .edit-form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .edit-form-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M6 8L2 4h8z'/%3E%3C/svg%3E") no-repeat right 16px center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .edit-form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .edit-radio-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .edit-radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .edit-radio-input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .edit-radio-input:checked::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .edit-radio-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .edit-continue-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .edit-continue-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .edit-continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 直接在页面内添加样式覆盖 */
+        .user-message {
+            align-self: flex-end !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+            text-align: left !important;
+        }
+        
+        #conversation-overlay .user-message,
+        .overlay-message-box .user-message {
+            text-align: left !important;
+            float: none !important;
+            align-self: flex-end !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="iphone-frame">
+        <div class="notch"></div>
+        <div class="screen">
+            <div class="starry-night" id="starry-night"></div>
+
+            <!-- 欢迎页 -->
+            <div class="page active" id="welcome-page">
+                <div class="welcome-page">
+                    <div class="moon-logo">
+                        <svg viewBox="0 0 64 64">
+                            <defs>
+                                <clipPath id="welcome-moon-clip">
+                                    <path d="M32,4 A28,28 0 0 1 32,60 C22,60 16,48 16,32 C16,16 22,4 32,4"/>
+                                </clipPath>
+                            </defs>
+                            <circle cx="32" cy="32" r="28" fill="#fff" clip-path="url(#welcome-moon-clip)"/>
+                        </svg>
+                    </div>
+                    <div class="welcome-text">
+                        <div class="moon-phase"></div>
+                        <div>适合放下未完成的事物</div>
+                    </div>
+                    <button class="start-button" onclick="startApp()">
+                        开启今夜
+                    </button>
+                    <div class="copyright">
+                        <div>© 夜间观察所 · Moonpost Observatory</div>
+                        <div>All Rights Reserved</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户信息收集弹窗 -->
+            <div class="user-info-overlay" id="user-info-overlay">
+                <div class="user-info-modal">
+                    <h2 class="title">完善个人信息</h2>
+                    <div class="info-form">
+                        <div class="form-group">
+                            <label class="form-label">昵称</label>
+                            <input type="text" class="form-input" id="nickname" placeholder="输入你的昵称">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">出生年月日</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" class="form-input" id="birthyear" placeholder="年" maxlength="4" style="width: 80px;">
+                                <input type="text" class="form-input" id="birthmonth" placeholder="月" maxlength="2" style="width: 60px;">
+                                <input type="text" class="form-input" id="birthday" placeholder="日" maxlength="2" style="width: 60px;">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">出生时间</label>
+                            <input type="time" class="form-input" id="birthtime">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">性别</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="男" class="radio-input">
+                                    <span class="radio-label">男</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="女" class="radio-input">
+                                    <span class="radio-label">女</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="continue-button" onclick="saveUserInfo()">继续</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 首页 -->
+            <div class="page" id="home-page">
+                <div class="title-section" style="text-align: center;">
+                    <div class="logo-header" style="display: flex; justify-content: center; align-items: center;">
+                        <div class="moon-logo" style="width: 48px; height: 48px; margin: 0 12px 0 0;">
+                            <svg viewBox="0 0 64 64">
+                                <defs>
+                                    <clipPath id="home-moon-clip">
+                                        <path d="M32,4 A28,28 0 0 1 32,60 C22,60 16,48 16,32 C16,16 22,4 32,4"/>
+                                    </clipPath>
+                                </defs>
+                                <circle cx="32" cy="32" r="28" fill="#fff" clip-path="url(#home-moon-clip)"/>
+                            </svg>
+                        </div>
+                        <div>
+                        <h1 style="margin: 0; font-size: 24px; font-weight: normal;">今夜盈凸月</h1>
+                            <div class="moon-phase" style="font-size: 14px; color: rgba(255,255,255,0.7);"></div>
+                        </div>
+                    </div>
+            </div>
+
+                <div class="message-box" style="text-align: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #fff;">
+                        <span>你今晚想说些什么？</span>
+                    </div>
+                    <textarea class="message-input" rows="3" style="text-align: center;"></textarea>
+                    <button class="send-button">
+                        投出
+                    </button>
+                </div>
+            </div>
+
+            <!-- 观测页 -->
+            <div class="page" id="observe-page">
+                <div class="title-section">
+                    <h1 class="title">
+                        <div class="moon-icon"></div>
+                        今夜盈凸月
+                    </h1>
+                </div>
+
+                <div class="message-box">
+                    <div class="info-panel">
+                        <div>月相：盈凸月</div>
+                        <div>月龄：27.5天</div>
+                        <div>照明度：15.8%</div>
+                        <div>可见时间：03:00 - 06:00</div>
+                    </div>
+                </div>
+
+                <div class="message-box">
+                    <div class="info-panel" style="color: #fff;">
+                        今夜适合放下未完成的事物，
+                        让心绪随着月光慢慢沉淀。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 消息页 -->
+            <div class="page" id="message-page">
+                <div class="title-section">
+                    <h1 class="title">记录</h1>
+                </div>
+
+                <div class="chat-records-grid" id="chat-records">
+                    <!-- 聊天记录将通过JavaScript动态插入 -->
+                </div>
+            </div>
+
+            <!-- 我的页面 -->
+            <div class="page" id="profile-page">
+                <div class="title-section">
+                    <h1 class="title">个人档案</h1>
+                </div>
+
+                <div class="message-box">
+                    <div class="info-panel">
+                        <div id="profile-nickname" style="color: #fff; font-size: 24px; margin-bottom: 16px;"></div>
+                        <div id="profile-constellation" style="color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 8px;"></div>
+                        <div id="profile-birthinfo" style="color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 16px;"></div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 14px;">
+                            <div>观测记录：0次</div>
+                            <div>累计时长：0小时</div>
+                            <div>最常观测：盈凸月</div>
+                        </div>
+                        <button id="edit-profile-btn" class="send-button" style="margin-top: 20px;" onclick="showEditProfileOverlay()">编辑信息</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 编辑个人信息弹窗 -->
+            <div class="overlay-page" id="edit-profile-overlay">
+                <div class="overlay-content">
+                    <div class="overlay-header">
+                        <div>编辑个人信息</div>
+                        <button class="close-overlay" onclick="closeEditProfileOverlay()">×</button>
+                    </div>
+                    <div class="overlay-message-box" style="padding: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">昵称</label>
+                            <input type="text" id="edit-nickname" class="form-input" placeholder="请输入昵称">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生年份</label>
+                            <select id="edit-birthyear" class="form-select">
+                                <option value="">请选择</option>
+                                <!-- JS动态生成年份选项 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生月份</label>
+                            <select id="edit-birthmonth" class="form-select">
+                                <option value="">请选择</option>
+                                <!-- JS动态生成月份选项 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生日期</label>
+                            <select id="edit-birthday" class="form-select">
+                                <option value="">请选择</option>
+                                <!-- JS动态生成日期选项 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">出生时间（可选）</label>
+                            <input type="text" id="edit-birthtime" class="form-input" placeholder="例如: 12:30">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">性别</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="edit-gender" value="女" class="radio-input">
+                                    <span class="radio-label">女</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="edit-gender" value="男" class="radio-input">
+                                    <span class="radio-label">男</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="edit-gender" value="其他" class="radio-input">
+                                    <span class="radio-label">其他</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button class="continue-button" style="margin-top: 24px;" onclick="saveEditedUserInfo()">保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 占卜页面 -->
+            <div class="page" id="divine-page">
+                <div class="title-section">
+                    <h1 class="title">
+                        <div class="moon-icon"></div>
+                        月相占卜
+                    </h1>
+                    <div class="subtitle">今夜月相：盈凸月 · 随机信件连接开启</div>
+                </div>
+
+                <div id="outboxSection" class="message-box fade-in">
+                    <h2>📝 你今晚想说些什么？</h2>
+                    <textarea
+                        id="outboxText"
+                        rows="4"
+                        placeholder="写下一句话，让它飘向远方..."
+                    ></textarea>
+                    <button id="sendButton" class="send-button">投出</button>
+                </div>
+
+                <div id="inboxSection" class="message-box fade-in" style="display: none;">
+                    <h2>📨 你收到了一条留言：</h2>
+                    <p id="receivedMessage" class="message-content"></p>
+                    <textarea
+                        id="replyText"
+                        rows="3"
+                        placeholder="你想说些什么..."
+                    ></textarea>
+                    <button id="replyButton" class="send-button">回信</button>
+                </div>
+            </div>
+
+            <!-- 优化覆盖页面结构 -->
+            <div class="overlay-page" id="conversation-overlay">
+                <div class="overlay-content">
+                    <div class="overlay-header">
+                        <div class="moon-phase">今夜月相：盈凸月</div>
+                        <button class="close-overlay" onclick="closeOverlay()">×</button>
+                    </div>
+                    <div class="overlay-message-box" id="chat-messages">
+                        <!-- 消息内容会在这里动态添加 -->
+                    </div>
+                    <div class="overlay-input-area">
+                        <textarea class="overlay-input" id="chat-input" placeholder="写下你的想法..." rows="1"></textarea>
+                        <button class="overlay-send" id="send-button">↑</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航栏 -->
+            <nav class="nav-bar">
+                <a class="nav-item" data-page="home-page">
+                    <span class="nav-icon">⌂</span>
+                    <span>运势</span>
+                </a>
+                <a class="nav-item" data-page="phases-page">
+                    <span class="nav-icon">◑</span>
+                    <span>月相</span>
+                </a>
+                <a class="nav-item" data-page="message-page">
+                    <span class="nav-icon">✎</span>
+                    <span>记录</span>
+                </a>
+                <a class="nav-item" data-page="profile-page">
+                    <span class="nav-icon">○</span>
+                    <span>我的</span>
+                </a>
+            </nav>
+
+            <!-- 月相页面 -->
+            <div class="page" id="phases-page">
+                <div class="title-section">
+                    <h1 class="title">月相图鉴</h1>
+                    <div class="subtitle">了解月亮的阴晴圆缺</div>
+                </div>
+
+                <div class="phases-content" style="height: calc(100% - 240px); overflow-y: auto; padding-bottom: 20px;">
+                    <div class="message-box">
+                        <div class="info-panel">
+                            <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">今日月相</div>
+                            <div id="current-moon-phase" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <!-- 移除月相图标 -->
+                                <div style="flex: 1;">
+                                    <div style="color: #fff; font-size: 18px;">盈凸月</div>
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 14px;">Waxing Gibbous</div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px;">
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">月龄</div>
+                                    <div style="color: #fff; font-size: 16px;">12.0天</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">照明度</div>
+                                    <div style="color: #fff; font-size: 16px;">91.7%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-box">
+                        <div class="info-panel">
+                            <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">本月月相</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">盈凸月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月5日 02:14</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">满月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月13日 00:22</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">下弦月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月21日 01:35</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">新月</div>
+                                    <div style="color: #fff; font-size: 14px;">4月27日 19:34</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-box">
+                        <div class="info-panel">
+                            <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">月相说明</div>
+                            <div style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+                                盈凸月是月亮周期的第四阶段，发生在上弦月和满月之间。这个阶段代表着月亮逐渐增加的亮度，在这个阶段的开始，月亮看起来是半亮的，然后被照亮的区域逐渐扩大，直到满月阶段。在这个时期，月亮在晚上清晰可见，这使得它成为方便观察的月相。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="home-indicator"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/moonphase.js"></script>
+</body>
+</html> 

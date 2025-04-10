@@ -1,0 +1,61 @@
+// 超简单直接的用户消息位置修复
+(function() {
+  // 直接找到并修复用户消息
+  function fixMessages() {
+    console.log("运行消息修复...");
+    
+    // 查找所有文本内容是"hi"的div元素
+    var hiMessages = [];
+    var allDivs = document.querySelectorAll('div');
+    
+    allDivs.forEach(function(div) {
+      var text = div.textContent.trim().toLowerCase();
+      
+      // 针对性处理
+      if (text === 'hi' || 
+          text.includes('*轻轻放下手') || 
+          text.includes('今天过得怎么样') ||
+          (text.length < 30 && !text.includes('今夜月相'))) {
+        
+        // 添加明显的样式，确保看到效果
+        div.style.cssText = `
+          float: right !important;
+          margin-left: auto !important;
+          text-align: right !important;
+          background-color: #333 !important;
+          border-radius: 10px !important;
+          padding: 8px 12px !important;
+          max-width: 80% !important;
+          color: white !important;
+          clear: both !important;
+          position: relative !important;
+          display: block !important;
+        `;
+        
+        console.log("已修复消息: " + text);
+        hiMessages.push(div);
+      }
+    });
+    
+    console.log("找到并修复了 " + hiMessages.length + " 条用户消息");
+  }
+  
+  // 立即执行并定期检查新消息
+  setTimeout(fixMessages, 500);
+  setInterval(fixMessages, 1000);
+  
+  // 添加CSS样式
+  var style = document.createElement('style');
+  style.textContent = `
+    /* 用户消息强制右对齐 */
+    [style*="float: right"] {
+      float: right !important;
+      margin-left: auto !important;
+      clear: both !important;
+      display: block !important;
+    }
+  `;
+  document.head.appendChild(style);
+  
+  console.log("消息位置修复脚本已加载");
+})(); 

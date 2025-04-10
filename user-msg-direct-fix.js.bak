@@ -1,0 +1,41 @@
+// 直接注入修复脚本
+document.write(`
+<script>
+(function() {
+  // 识别和修复用户消息的函数
+  function fixUserMessages() {
+    try {
+      // 获取所有div
+      var allDivs = document.getElementsByTagName('div');
+      
+      for (var i = 0; i < allDivs.length; i++) {
+        var div = allDivs[i];
+        var text = div.textContent.trim();
+        
+        // 用户消息特征：短文本、hi、特定开头等
+        if (text === 'hi' || 
+            text === 'Hi' || 
+            text.startsWith('*') ||
+            (text.length < 30 && !text.includes('月相') && !text.includes('：'))) {
+          
+          // 应用强制右对齐样式
+          div.style.cssText = 'float: right !important; margin-left: auto !important; background: #333 !important; border-radius: 10px !important; clear: both !important; max-width: 80% !important;';
+        }
+      }
+    } catch(e) {
+      console.error('修复用户消息时出错:', e);
+    }
+  }
+  
+  // 页面加载完成后运行
+  if (document.readyState === 'complete') {
+    fixUserMessages();
+  } else {
+    window.addEventListener('load', fixUserMessages);
+  }
+  
+  // 每秒运行一次，确保捕获新消息
+  setInterval(fixUserMessages, 1000);
+})();
+</script>
+`); 

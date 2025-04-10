@@ -81,15 +81,15 @@ function updateMoonPhaseDisplay() {
     // 根据月相名称获取对应的SVG文件名
     let svgFileName;
     switch(moonData.phase) {
-        case '新月': svgFileName = 'new-moon.svg'; break;
-        case '娥眉月': svgFileName = 'waxing-crescent.svg'; break;
-        case '上弦月': svgFileName = 'first-quarter.svg'; break;
-        case '盈凸月': svgFileName = 'waxing-gibbous.svg'; break;
-        case '满月': svgFileName = 'full-moon.svg'; break;
-        case '亏凸月': svgFileName = 'waning-gibbous.svg'; break;
-        case '下弦月': svgFileName = 'last-quarter.svg'; break;
-        case '残月': svgFileName = 'waning-crescent.svg'; break;
-        default: svgFileName = 'full-moon.svg';
+        case '新月': svgFileName = 'new_moon.svg'; break;
+        case '娥眉月': svgFileName = 'waxing_crescent.svg'; break;
+        case '上弦月': svgFileName = 'first_quarter.svg'; break;
+        case '盈凸月': svgFileName = 'waxing_gibbous.svg'; break;
+        case '满月': svgFileName = 'full_moon.svg'; break;
+        case '亏凸月': svgFileName = 'waning_gibbous.svg'; break;
+        case '下弦月': svgFileName = 'last_quarter.svg'; break;
+        case '残月': svgFileName = 'waning_crescent.svg'; break;
+        default: svgFileName = 'full_moon.svg';
     }
     
     // 更新所有月相图标 - 使用自定义SVG

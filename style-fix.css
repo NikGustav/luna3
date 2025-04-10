@@ -31,3 +31,46 @@
     0%, 100% { opacity: 0.2; transform: scale(1); }
     50% { opacity: 0.8; transform: scale(1.2); }
 }
+
+/* 移除AI消息下方多余的框 */
+.ai-message-container,
+.message-container,
+.message-wrapper,
+.message-box,
+.overlay-message-box {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* 彻底解决时间戳容器的灰色背景问题 */
+.message-time-container,
+.ai-message .message-time-container,
+.message-time-wrapper,
+.time-container,
+.timestamp-container,
+.chat-timestamp,
+div:has(> .message-time) {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    position: relative;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* 确保时间戳仍然可见但没有额外背景 */
+.message-time,
+.timestamp,
+.time,
+.chat-time {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent !important;
+    background-color: transparent !important;
+    padding: 2px 5px;
+    margin: 0;
+    box-shadow: none !important;
+    border: none !important;
+}

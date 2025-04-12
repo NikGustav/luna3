@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今夜盈凸月</title>
+    <title>今夜满月</title>
     <link rel="stylesheet" href="style-fix.css">
     <link rel="stylesheet" href="css/message-fix.css">
+    <link rel="stylesheet" href="css/user-message-fix.css">
     <style>
         body {
             margin: 0;
@@ -1700,7 +1701,7 @@
                             </svg>
                         </div>
                         <div>
-                        <h1 style="margin: 0; font-size: 24px; font-weight: normal;">今夜盈凸月</h1>
+                        <h1 style="margin: 0; font-size: 24px; font-weight: normal;">今夜满月</h1>
                             <div class="moon-phase" style="font-size: 14px; color: rgba(255,255,255,0.7);"></div>
                         </div>
                     </div>
@@ -1722,13 +1723,13 @@
                 <div class="title-section">
                     <h1 class="title">
                         <div class="moon-icon"></div>
-                        今夜盈凸月
+                        今夜满月
                     </h1>
                 </div>
 
                 <div class="message-box">
                     <div class="info-panel">
-                        <div>月相：盈凸月</div>
+                        <div>月相：满月</div>
                         <div>月龄：27.5天</div>
                         <div>照明度：15.8%</div>
                         <div>可见时间：03:00 - 06:00</div>
@@ -1757,20 +1758,55 @@
             <!-- 我的页面 -->
             <div class="page" id="profile-page">
                 <div class="title-section">
-                    <h1 class="title">个人档案</h1>
+                    <h1 class="title">个人资料</h1>
+                    <div class="subtitle">设置您的基本信息</div>
                 </div>
-
-                <div class="message-box">
-                    <div class="info-panel">
-                        <div id="profile-nickname" style="color: #fff; font-size: 24px; margin-bottom: 16px;"></div>
-                        <div id="profile-constellation" style="color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 8px;"></div>
-                        <div id="profile-birthinfo" style="color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 16px;"></div>
-                        <div style="color: rgba(255,255,255,0.6); font-size: 14px;">
-                            <div>观测记录：0次</div>
-                            <div>累计时长：0小时</div>
-                            <div>最常观测：盈凸月</div>
-                        </div>
-                        <button id="edit-profile-btn" class="send-button" style="margin-top: 20px;" onclick="showEditProfileOverlay()">编辑信息</button>
+                
+                <div class="profile-content">
+                    <div class="message-box">
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label for="nickname">昵称</label>
+                                <input type="text" id="nickname" name="nickname" placeholder="请输入您的昵称">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="birthdate">出生日期</label>
+                                <input type="date" id="birthdate" name="birthdate">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="zodiac">星座</label>
+                                <select id="zodiac" name="zodiac">
+                                    <option value="">请选择</option>
+                                    <option value="白羊座">白羊座 (3/21-4/19)</option>
+                                    <option value="金牛座">金牛座 (4/20-5/20)</option>
+                                    <option value="双子座">双子座 (5/21-6/21)</option>
+                                    <option value="巨蟹座">巨蟹座 (6/22-7/22)</option>
+                                    <option value="狮子座">狮子座 (7/23-8/22)</option>
+                                    <option value="处女座">处女座 (8/23-9/22)</option>
+                                    <option value="天秤座">天秤座 (9/23-10/23)</option>
+                                    <option value="天蝎座">天蝎座 (10/24-11/21)</option>
+                                    <option value="射手座">射手座 (11/22-12/21)</option>
+                                    <option value="摩羯座">摩羯座 (12/22-1/19)</option>
+                                    <option value="水瓶座">水瓶座 (1/20-2/18)</option>
+                                    <option value="双鱼座">双鱼座 (2/19-3/20)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gender">性别</label>
+                                <select id="gender" name="gender">
+                                    <option value="">请选择</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                    <option value="其他">其他</option>
+                                    <option value="不愿透露">不愿透露</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn-save">保存信息</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -1841,7 +1877,7 @@
                         <div class="moon-icon"></div>
                         月相占卜
                     </h1>
-                    <div class="subtitle">今夜月相：盈凸月 · 随机信件连接开启</div>
+                    <div class="subtitle">今夜月相：满月 · 随机信件连接开启</div>
                 </div>
 
                 <div id="outboxSection" class="message-box fade-in">
@@ -1870,7 +1906,7 @@
             <div class="overlay-page" id="conversation-overlay">
                 <div class="overlay-content">
                     <div class="overlay-header">
-                        <div class="moon-phase">今夜月相：盈凸月</div>
+                        <div class="moon-phase">今夜月相：满月</div>
                         <button class="close-overlay" onclick="closeOverlay()">×</button>
                     </div>
                     <div class="overlay-message-box" id="chat-messages">
@@ -1917,8 +1953,8 @@
                             <div id="current-moon-phase" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                                 <!-- 移除月相图标 -->
                                 <div style="flex: 1;">
-                                    <div style="color: #fff; font-size: 18px;">盈凸月</div>
-                                    <div style="color: rgba(255,255,255,0.6); font-size: 14px;">Waxing Gibbous</div>
+                                    <div style="color: #fff; font-size: 18px;">满月</div>
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 14px;">Full Moon</div>
                                 </div>
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px;">
@@ -1939,10 +1975,6 @@
                             <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">本月月相</div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
                                 <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
-                                    <div style="color: rgba(255,255,255,0.6); font-size: 12px;">盈凸月</div>
-                                    <div style="color: #fff; font-size: 14px;">4月5日 02:14</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
                                     <div style="color: rgba(255,255,255,0.6); font-size: 12px;">满月</div>
                                     <div style="color: #fff; font-size: 14px;">4月13日 00:22</div>
                                 </div>
@@ -1962,7 +1994,7 @@
                         <div class="info-panel">
                             <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">月相说明</div>
                             <div style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
-                                盈凸月是月亮周期的第四阶段，发生在上弦月和满月之间。这个阶段代表着月亮逐渐增加的亮度，在这个阶段的开始，月亮看起来是半亮的，然后被照亮的区域逐渐扩大，直到满月阶段。在这个时期，月亮在晚上清晰可见，这使得它成为方便观察的月相。
+                                满月是月亮周期的第四阶段，发生在上弦月和下弦月之间。这个阶段代表着月亮逐渐增加的亮度，在这个阶段的开始，月亮看起来是半亮的，然后被照亮的区域逐渐扩大，直到满月阶段。在这个时期，月亮在晚上清晰可见，这使得它成为方便观察的月相。
                             </div>
                         </div>
                     </div>
@@ -2426,7 +2458,7 @@
             } catch (error) {
                 console.error('获取月相信息失败:', error);
             }
-            return "盈凸月"; // 备用值
+            return "满月"; // 备用值
         }
 
         function getMoonPhaseDescription() {
@@ -3083,6 +3115,85 @@
             // 显示成功提示
             alert('个人信息更新成功');
         }
+
+        // 用户资料表单处理
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载用户资料
+            function loadUserProfile() {
+                try {
+                    const userProfile = localStorage.getItem('userProfile');
+                    if (userProfile) {
+                        const profileData = JSON.parse(userProfile);
+                        
+                        // 填充表单
+                        document.getElementById('nickname').value = profileData.nickname || '';
+                        document.getElementById('birthdate').value = profileData.birthDate || '';
+                        document.getElementById('zodiac').value = profileData.zodiac || '';
+                        document.getElementById('gender').value = profileData.gender || '';
+                    }
+                } catch (e) {
+                    console.error('加载用户资料错误:', e);
+                }
+            }
+            
+            // 保存用户资料
+            function saveUserProfile(event) {
+                event.preventDefault();
+                
+                const profileData = {
+                    nickname: document.getElementById('nickname').value,
+                    birthDate: document.getElementById('birthdate').value,
+                    zodiac: document.getElementById('zodiac').value,
+                    gender: document.getElementById('gender').value
+                };
+                
+                try {
+                    localStorage.setItem('userProfile', JSON.stringify(profileData));
+                    alert('个人资料已保存');
+                } catch (e) {
+                    console.error('保存用户资料错误:', e);
+                    alert('保存失败，请重试');
+                }
+            }
+            
+            // 注册表单提交事件
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', saveUserProfile);
+            }
+            
+            // 自动计算星座
+            const birthDateInput = document.getElementById('birthdate');
+            if (birthDateInput) {
+                birthDateInput.addEventListener('change', function() {
+                    const birthDate = new Date(this.value);
+                    if (!isNaN(birthDate.getTime())) {
+                        const month = birthDate.getMonth() + 1;
+                        const day = birthDate.getDate();
+                        
+                        // 根据日期计算星座
+                        let zodiac = '';
+                        if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) zodiac = '白羊座';
+                        else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) zodiac = '金牛座';
+                        else if ((month === 5 && day >= 21) || (month === 6 && day <= 21)) zodiac = '双子座';
+                        else if ((month === 6 && day >= 22) || (month === 7 && day <= 22)) zodiac = '巨蟹座';
+                        else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) zodiac = '狮子座';
+                        else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) zodiac = '处女座';
+                        else if ((month === 9 && day >= 23) || (month === 10 && day <= 23)) zodiac = '天秤座';
+                        else if ((month === 10 && day >= 24) || (month === 11 && day <= 21)) zodiac = '天蝎座';
+                        else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) zodiac = '射手座';
+                        else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) zodiac = '摩羯座';
+                        else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) zodiac = '水瓶座';
+                        else if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) zodiac = '双鱼座';
+                        
+                        document.getElementById('zodiac').value = zodiac;
+                    }
+                });
+            }
+            
+            // 加载用户资料
+            loadUserProfile();
+        });
     </script>
 </body>
 </html> 

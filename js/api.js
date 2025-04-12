@@ -77,22 +77,63 @@ async function sendMessageToAPI(message) {
             return await simulateAPIResponse(LOCAL_RESPONSES[randomIndex]);
         }
 
+        // 获取当前月相信息
+        const moonInfo = getMoonPhase();
+        
+        // 获取用户信息
+        const userInfo = getUserProfile() || { 
+            nickname: '未知用户',
+            birthDate: '',
+            zodiac: '',
+            gender: ''
+        };
+        
+        // 构建带有上下文信息的系统提示
+        const contextualPrompt = `${SYSTEM_PROMPT}
+
+【当前环境信息】
+- 当前月相：${moonInfo.phase}（月龄：${moonInfo.age}，照明度：${moonInfo.illumination}）
+- 月相特点：满月代表能量达到顶峰，是实现目标和收获成果的时期，情绪也往往更加强烈
+- 满月象征着完成、圆满和释放，是发现洞见和庆祝成就的理想时机
+
+【用户个人信息】
+- 用户昵称：${userInfo.nickname}
+${userInfo.birthDate ? `- 用户出生日期：${userInfo.birthDate}` : ''}
+${userInfo.zodiac ? `- 用户星座：${userInfo.zodiac}` : ''}
+${userInfo.gender ? `- 用户性别：${userInfo.gender}` : ''}
+
+请在对话中自然地融入对当前月相的了解，以及用户的个人情况，但不要直接提及你知道用户的这些信息，让互动更加自然而有针对性。`;
+
         const requestBody = {
             model: "deepseek-chat",
             messages: [
                 {
                     role: "system",
-                    content: SYSTEM_PROMPT
-                },
-                {
-                    role: "user",
-                    content: message
+                    content: contextualPrompt
                 }
             ],
             temperature: 0.7,
             max_tokens: 2000,
             stream: false
         };
+        
+        // 添加对话历史
+        if (conversationHistory && conversationHistory.length > 0) {
+            // 只取最近的5轮对话作为上下文(最多10条消息)
+            const recentHistory = conversationHistory.slice(-10);
+            recentHistory.forEach(item => {
+                requestBody.messages.push({
+                    role: item.role,
+                    content: item.content
+                });
+            });
+        }
+        
+        // 添加用户当前消息
+        requestBody.messages.push({
+            role: "user",
+            content: message
+        });
 
         console.log('请求体:', JSON.stringify(requestBody, null, 2));
 
@@ -120,8 +161,25 @@ async function sendMessageToAPI(message) {
         if (!data.choices || !data.choices[0] || !data.choices[0].message) {
             throw new Error('无效的响应格式');
         }
-
-        return data.choices[0].message.content;
+        
+        // 存储这次交互到对话历史
+        conversationHistory.push({
+            role: "user",
+            content: message
+        });
+        
+        const aiResponse = data.choices[0].message.content;
+        conversationHistory.push({
+            role: "assistant",
+            content: aiResponse
+        });
+        
+        // 保持历史记录在合理长度内
+        if (conversationHistory.length > 20) {
+            conversationHistory = conversationHistory.slice(-20);
+        }
+        
+        return aiResponse;
     } catch (error) {
         console.error('API 调用错误:', error);
         // 即使发生错误，也尝试再次调用API而不是返回本地响应
@@ -137,14 +195,45 @@ async function simulateAPIResponse(response) {
     return response;
 }
 
+// 获取用户信息
+function getUserProfile() {
+    try {
+        const storedProfile = localStorage.getItem('userProfile');
+        if (storedProfile) {
+            return JSON.parse(storedProfile);
+        }
+        return null;
+    } catch (e) {
+        console.error('获取用户信息失败:', e);
+        return null;
+    }
+}
+
 // 获取月相信息
 function getMoonPhase() {
-    return {
-        phase: '盈凸月',
-        age: '12.0天',
-        illumination: '91.7%',
-        visibility: '18:00 - 04:00'
-    };
+    try {
+        // 尝试从moonphase.js获取月相信息
+        if (typeof window.getMoonPhaseData === 'function') {
+            return window.getMoonPhaseData();
+        }
+        
+        // 否则返回固定信息
+        return {
+            phase: '满月',
+            age: '14.8天',
+            illumination: '100.0%',
+            visibility: '19:00 - 05:30'
+        };
+    } catch (e) {
+        console.error('获取月相信息失败:', e);
+        // 返回默认值
+        return {
+            phase: '满月',
+            age: '14.8天',
+            illumination: '100.0%',
+            visibility: '19:00 - 05:30'
+        };
+    }
 }
 
 // 暴露API给全局作用域

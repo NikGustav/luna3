@@ -139,6 +139,17 @@ function calculateMoonPath(phase) {
     return `M${cx},${cy-r} A${r},${r} 0 1 1 ${cx},${cy+r} A${r},${r} 0 1 1 ${cx},${cy-r}`;
 }
 
+// 导出月相数据供API使用
+function getMoonPhaseData() {
+    const moonData = getMoonPhase();
+    return {
+        phase: moonData.phase,
+        age: moonData.age,
+        illumination: moonData.illumination,
+        visibility: '19:00 - 05:30'  // 满月的大致可见时间
+    };
+}
+
 // 立即更新月相信息
 updateMoonPhaseDisplay();
 
@@ -146,4 +157,7 @@ updateMoonPhaseDisplay();
 setInterval(updateMoonPhaseDisplay, 60000);
 
 // 页面加载时更新月相信息
-document.addEventListener('DOMContentLoaded', updateMoonPhaseDisplay); 
+document.addEventListener('DOMContentLoaded', updateMoonPhaseDisplay);
+
+// 暴露函数到全局作用域
+window.getMoonPhaseData = getMoonPhaseData; 

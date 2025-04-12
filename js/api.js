@@ -79,6 +79,7 @@ async function sendMessageToAPI(message) {
 
         // 获取当前月相信息
         const moonInfo = getMoonPhase();
+        console.log('当前月相信息:', moonInfo);
         
         // 获取用户信息
         const userInfo = getUserProfile() || { 
@@ -87,6 +88,7 @@ async function sendMessageToAPI(message) {
             zodiac: '',
             gender: ''
         };
+        console.log('当前用户信息:', userInfo);
         
         // 构建带有上下文信息的系统提示
         const contextualPrompt = `${SYSTEM_PROMPT}
@@ -102,7 +104,9 @@ ${userInfo.birthDate ? `- 用户出生日期：${userInfo.birthDate}` : ''}
 ${userInfo.zodiac ? `- 用户星座：${userInfo.zodiac}` : ''}
 ${userInfo.gender ? `- 用户性别：${userInfo.gender}` : ''}
 
-请在对话中自然地融入对当前月相的了解，以及用户的个人情况，但不要直接提及你知道用户的这些信息，让互动更加自然而有针对性。`;
+请在对话中自然地融入对当前月相的了解，以及用户的个人情况(特别是他们的星座${userInfo.zodiac})，但不要直接提及你知道用户的这些信息，让互动更加自然而有针对性。`;
+
+        console.log('构建的上下文提示:', contextualPrompt);
 
         const requestBody = {
             model: "deepseek-chat",
@@ -198,10 +202,31 @@ async function simulateAPIResponse(response) {
 // 获取用户信息
 function getUserProfile() {
     try {
+        // 尝试获取新格式的用户信息
         const storedProfile = localStorage.getItem('userProfile');
         if (storedProfile) {
-            return JSON.parse(storedProfile);
+            const profileData = JSON.parse(storedProfile);
+            console.log('从userProfile获取用户数据:', profileData);
+            return profileData;
         }
+        
+        // 尝试获取旧格式的用户信息
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+            const userInfoData = JSON.parse(userInfo);
+            console.log('从userInfo获取用户数据:', userInfoData);
+            
+            // 转换为新格式并返回
+            return {
+                nickname: userInfoData.nickname || '',
+                birthDate: userInfoData.birthdate || '',
+                // 旧格式直接存储星座，新格式使用zodiac字段
+                zodiac: userInfoData.constellation || '', 
+                gender: userInfoData.gender || ''
+            };
+        }
+        
+        console.log('没有找到用户信息');
         return null;
     } catch (e) {
         console.error('获取用户信息失败:', e);

@@ -3193,7 +3193,20 @@
                 };
                 
                 try {
+                    // 保存到新的userProfile存储
                     localStorage.setItem('userProfile', JSON.stringify(profileData));
+                    
+                    // 同时保存到旧的userInfo存储，以保持兼容性
+                    const userInfoData = {
+                        nickname: profileData.nickname,
+                        birthdate: profileData.birthDate,
+                        constellation: profileData.zodiac,
+                        gender: profileData.gender,
+                        birthtime: '未知' // 旧系统需要这个字段
+                    };
+                    localStorage.setItem('userInfo', JSON.stringify(userInfoData));
+                    
+                    console.log('用户资料已保存到两种存储格式');
                     alert('个人资料已保存');
                     
                     // 重新加载用户资料并显示

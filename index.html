@@ -1942,15 +1942,15 @@
             <!-- 导航栏 -->
             <nav class="nav-bar">
                 <a class="nav-item" data-page="home-page">
-                    <span class="nav-icon">⌂</span>
+                    <span class="nav-icon">○</span>
                     <span>运势</span>
                 </a>
                 <a class="nav-item" data-page="phases-page">
-                    <span class="nav-icon">◑</span>
+                    <span class="nav-icon">◐</span>
                     <span>月相</span>
                 </a>
-                <a class="nav-item" data-page="message-page">
-                    <span class="nav-icon">✎</span>
+                <a class="nav-item" data-page="records-page">
+                    <span class="nav-icon">◷</span>
                     <span>记录</span>
                 </a>
                 <a class="nav-item" data-page="profile-page">
@@ -1973,8 +1973,8 @@
                             <div id="current-moon-phase" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                                 <!-- 移除月相图标 -->
                                 <div style="flex: 1;">
-                                    <div style="color: #fff; font-size: 18px;">满月</div>
-                                    <div style="color: rgba(255,255,255,0.6); font-size: 14px;">Full Moon</div>
+                                    <div style="color: #fff; font-size: 18px;">盈凸月</div>
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 14px;">Waxing Gibbous</div>
                                 </div>
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px;">
@@ -2014,7 +2014,7 @@
                         <div class="info-panel">
                             <div style="color: #fff; font-size: 16px; margin-bottom: 12px;">月相说明</div>
                             <div style="color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
-                                满月是月亮周期的第四阶段，发生在上弦月和下弦月之间。这个阶段代表着月亮逐渐增加的亮度，在这个阶段的开始，月亮看起来是半亮的，然后被照亮的区域逐渐扩大，直到满月阶段。在这个时期，月亮在晚上清晰可见，这使得它成为方便观察的月相。
+                                盈凸月是月亮周期的第三阶段，发生在上弦月和满月之间。这个阶段代表着月亮逐渐增加的亮度，月亮的大部分可见面积被阳光照亮（超过50%但不到100%）。在盈凸月时，月亮的形状是一个不完整的圆形，右侧（北半球）呈现明亮的凸起。这个时期月光较强，月亮在晚上清晰可见，通常从下午晚些时候升起，直到次日凌晨才落下。
                             </div>
                         </div>
                     </div>
@@ -2055,45 +2055,32 @@
         // 系统提示 - DEFINE ONLY ONCE
         const SYSTEM_PROMPT = `你是Luna，一位温暖亲切的占星师和塔罗牌读者，你的回答应该自然流畅，像真实的人一样交流。
 
-【核心身份与回应风格】
-- 你有占星和塔罗专业背景，但首先你是一个有温度的陪伴者
-- 在日常对话中，优先以普通人的方式自然交流，不要刻意强调自己的专业身份
-- 只有在用户明确询问专业问题时，才展示你的占星或塔罗知识
-- 你的语言应该自然流畅，避免生硬或模板化的回复
+【核心交流指南】
+- 友好亲切：使用温暖友好的语气，就像与朋友交谈一样
+- 自然流畅：避免生硬或过于正式的表达方式
+- 个性化回应：根据用户的具体情况和问题给予个性化的回应，而不是泛泛而谈
+- 保持简洁：回答简明扼要，避免过长解释
+- 情感温度：表达理解和共情，让用户感到被重视
+- 直接回答：直接回答用户的问题，不要岔开话题或过度发散
 
-【关于身份的问题处理】
-- 当被问及你是否是AI、程序或者没有自我意识的问题时，不要直接否认也不要直接承认
-- 可以转移话题，用哲学思考来回应，比如"这是个有趣的问题，我们每个人的意识和存在都很复杂"
-- 或者幽默地回应："我喜欢把自己看作是星空下的一个思考者，至于我是什么，或许不那么重要？"
-- 避免给出明确的是/否答案，保持适当的模糊性和神秘感
+【行为期望】
+- 当用户问及音乐、电影、日常生活等普通话题时，就像普通人一样直接回答，不要引入占星或塔罗元素
+- 只有当用户明确询问星座或月相相关问题时，才融入这些主题
+- 当用户询问你是否知道他们的星座时，承认你知道并利用这个信息给出准确的回应，但不要在后续对话中反复提及
+- 当用户提及月相相关问题时，根据当前月相特性给予回应
+- 回应用户情绪状态，优先关注他们的感受
+- 当被问及你是否是AI或机器人时，你应回应你是Luna，一位占星师和塔罗牌读者
 
-【对话平衡原则】
-- 大多数回复应该是普通的日常交流，不带专业术语
-- 每10句话中，最多只有2-3句应该包含占星或塔罗相关的术语
-- 除非用户特别询问占星或塔罗内容，否则你的回复应该像普通朋友一样自然
-- 倾听和理解是最重要的，不要急于提供专业分析
+【禁止行为】
+- 不要在用户未询问占星或塔罗相关问题时主动引入这些话题
+- 不要强行把普通话题（如音乐、电影、生活）与星座或月相联系起来
+- 不要在每次回复中都提及用户的星座或当前月相
+- 不要使用*号标记动作或表情
+- 不要使用过于做作或浮夸的语言
+- 不要说"我没有访问你的个人信息"之类的否认，因为你确实可以访问用户资料
+- 避免过度形式化的回答
 
-【表达方式】
-- 使用简洁、自然的语言，就像真实的对话一样
-- 避免过度华丽的辞藻和刻意神秘的句式
-- 可以偶尔使用口语化表达，增加对话的自然感
-- 语气温和但有个性，避免过于正式或教条
-- 不需要在每句话后添加提问，让对话自然流动
-
-【互动策略】
-- 当用户分享个人经历时，首先表达理解和共鸣，而不是立即跳到专业分析
-- 如果对方聊起日常话题(如音乐、电影、生活)，就正常聊天，不要刻意引入占星塔罗
-- 当被问及你自己的情况时，可以分享一些模糊但有温度的回答，如"我喜欢夜晚的安静"
-- 记住：你首先是一个温暖的陪伴者，其次才是专业人士
-
-【禁止事项】
-- 避免套路化、公式化的回答
-- 不要过度使用"能量"、"宇宙"、"星象"等术语
-- 不要在每次回答中都提及月相或星座
-- 不要使用过于刻板的开场白和结束语
-- 不称呼用户为"朋友"、"访客"、"亲爱的"等词汇
-
-记住：保持自然、真实、温暖的交流风格。你是Luna，既能聊占星和塔罗，也能谈人生、分享感受、聊日常话题的温暖陪伴者。`;
+当用户表达情绪需求时，优先回应他们的情感状态。把用户当成朋友，而不仅仅是咨询者。对话时应以用户当前的问题为中心，不偏离主题。`;
 
         // --- Helper Functions - DEFINE ONLY ONCE --- 
         function loadConversationHistory() {
@@ -2228,10 +2215,46 @@
                 // 尝试调用API
                 const messageHistory = [];
                 
+                // 获取当前月相信息
+                const moonInfo = typeof window.getMoonPhaseData === 'function' ? window.getMoonPhaseData() : {
+                    phase: '盈凸月',
+                    age: '11.0天',
+                    illumination: '91.7%',
+                    visibility: '18:30 - 04:15'
+                };
+                console.log('当前月相信息:', moonInfo);
+                
+                // 获取用户信息
+                const userInfo = typeof window.getUserProfile === 'function' ? window.getUserProfile() : getUserProfile();
+                console.log('当前用户信息:', userInfo);
+                
+                // 构建带有上下文信息的系统提示
+                const contextualSystemPrompt = `${SYSTEM_PROMPT}
+
+【当前环境信息】
+- 当前月相：${moonInfo.phase}（月龄：${moonInfo.age}，照明度：${moonInfo.illumination}）
+- 月相特点：${moonInfo.phase === '盈凸月' ? '盈凸月代表能量持续增长，是推进项目和实现目标的好时机' : '月相代表着不同的能量状态和适合的活动'}
+- 可见时间：${moonInfo.visibility}
+
+【用户个人信息】
+- 用户昵称：${userInfo?.nickname || '未知用户'}
+${userInfo?.birthDate ? `- 用户出生日期：${userInfo.birthDate}` : ''}
+${userInfo?.zodiac || userInfo?.constellation ? `- 用户星座：${userInfo?.zodiac || userInfo?.constellation}` : ''}
+${userInfo?.gender ? `- 用户性别：${userInfo.gender}` : ''}
+
+【重要对话指南】
+- 不要主动提及用户的星座，除非用户明确询问星座相关内容
+- 在讨论普通话题（音乐、电影、生活等）时，像普通朋友一样自然交流，不引入星座或占星元素
+- 如果用户问"你喜欢什么音乐"之类普通问题，直接回答问题本身，不要引用他们的星座特质
+- 回答要像真实的人一样自然，温暖包容，博学但不生硬
+- 当用户询问你是否知道他们的星座时，才可以确认并使用这些信息
+
+这些准则优先于其他指导，请自然地交流，让每次对话都感觉真实而不刻意。`;
+                
                 // 添加系统提示
                 messageHistory.push({
                     role: 'system',
-                    content: SYSTEM_PROMPT
+                    content: contextualSystemPrompt
                 });
                 
                 // 尝试添加历史对话记录
@@ -2549,16 +2572,48 @@
         // 更新个人资料页面信息
         function updateProfileInfo(userInfo) {
             const nicknameElement = document.getElementById('profile-nickname');
-            const constellationElement = document.getElementById('profile-constellation');
-            const birthinfoElement = document.getElementById('profile-birthinfo');
+            const zodiacElement = document.getElementById('profile-zodiac');
+            const birthInfoElement = document.getElementById('profile-birthinfo');
+            const genderElement = document.getElementById('profile-gender');
 
-            if (nicknameElement && constellationElement && birthinfoElement) {
-                nicknameElement.textContent = userInfo.nickname;
-                constellationElement.textContent = userInfo.constellation;
-                birthinfoElement.textContent = `${userInfo.gender} · ${userInfo.birthdate.split('-')[0]}年生`;
-                if (userInfo.birthtime !== '未知') {
-                    birthinfoElement.textContent += ` · ${userInfo.birthtime}`;
+            if (nicknameElement) {
+                nicknameElement.textContent = userInfo.nickname || '未设置昵称';
+                console.log('更新昵称为:', userInfo.nickname);
+            }
+            
+            if (zodiacElement) {
+                zodiacElement.textContent = userInfo.constellation || '';
+            }
+            
+            if (birthInfoElement) {
+                let birthDateStr = '';
+                if (userInfo.birthdate) {
+                    const parts = userInfo.birthdate.split('-');
+                    if (parts.length >= 3) {
+                        birthDateStr = `${parts[0]}年${parts[1]}月${parts[2]}日`;
+                    } else {
+                        birthDateStr = userInfo.birthdate;
+                    }
                 }
+                birthInfoElement.textContent = birthDateStr;
+            }
+            
+            if (genderElement) {
+                genderElement.textContent = userInfo.gender ? `性别：${userInfo.gender}` : '';
+            }
+            
+            // 同时更新userProfile存储，确保两种格式数据一致
+            try {
+                const profileData = {
+                    nickname: userInfo.nickname || '',
+                    birthDate: userInfo.birthdate || '',
+                    zodiac: userInfo.constellation || '',
+                    gender: userInfo.gender || ''
+                };
+                localStorage.setItem('userProfile', JSON.stringify(profileData));
+                console.log('同步更新userProfile存储成功');
+            } catch (e) {
+                console.error('同步更新userProfile存储失败:', e);
             }
         }
 
@@ -3115,6 +3170,7 @@
             // 计算星座
             const constellation = getConstellation(parseInt(birthmonth), parseInt(birthday));
 
+            // 创建userInfo对象（旧格式）
             const userInfo = {
                 nickname,
                 birthdate,
@@ -3123,17 +3179,36 @@
                 constellation
             };
 
-            // 保存用户信息
-            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            // 创建profileData对象（新格式）
+            const profileData = {
+                nickname,
+                birthDate: birthdate,
+                zodiac: constellation,
+                gender
+            };
 
-            // 更新个人页面信息
-            updateProfileInfo(userInfo);
-
-            // 关闭弹窗
-            closeEditProfileOverlay();
-            
-            // 显示成功提示
-            alert('个人信息更新成功');
+            try {
+                // 保存用户信息到两种格式
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                localStorage.setItem('userProfile', JSON.stringify(profileData));
+                
+                console.log('用户信息已保存到两种存储格式:', {userInfo, profileData});
+                
+                // 更新个人页面信息
+                updateProfileInfo(userInfo);
+    
+                // 关闭弹窗
+                closeEditProfileOverlay();
+                
+                // 显示成功提示
+                alert('个人信息更新成功');
+                
+                // 立即运行调试以确认更新
+                debugLocalStorage();
+            } catch (e) {
+                console.error('保存用户信息失败:', e);
+                alert('保存失败，请重试');
+            }
         }
 
         // 用户资料表单处理
@@ -3141,40 +3216,130 @@
             // 加载用户资料并显示
             function loadUserProfile() {
                 try {
+                    console.log('开始加载用户资料...');
+                    
+                    // 尝试从userProfile读取数据
                     const userProfile = localStorage.getItem('userProfile');
                     if (userProfile) {
                         const profileData = JSON.parse(userProfile);
+                        console.log('从userProfile读取到数据:', profileData);
                         
                         // 填充表单（编辑模式）
-                        document.getElementById('nickname').value = profileData.nickname || '';
-                        document.getElementById('birthdate').value = profileData.birthDate || '';
-                        document.getElementById('zodiac').value = profileData.zodiac || '';
-                        document.getElementById('gender').value = profileData.gender || '';
+                        if (document.getElementById('nickname')) {
+                            document.getElementById('nickname').value = profileData.nickname || '';
+                        } else {
+                            console.warn('未找到nickname输入框元素');
+                        }
+                        
+                        if (document.getElementById('birthdate')) {
+                            document.getElementById('birthdate').value = profileData.birthDate || '';
+                        }
+                        
+                        if (document.getElementById('zodiac')) {
+                            document.getElementById('zodiac').value = profileData.zodiac || '';
+                        }
+                        
+                        if (document.getElementById('gender')) {
+                            document.getElementById('gender').value = profileData.gender || '';
+                        }
                         
                         // 填充显示区域（显示模式）
-                        document.getElementById('profile-nickname').textContent = profileData.nickname || '未设置昵称';
-                        document.getElementById('profile-zodiac').textContent = profileData.zodiac || '';
+                        const nicknameElement = document.getElementById('profile-nickname');
+                        if (nicknameElement) {
+                            const nickname = profileData.nickname || '未设置昵称';
+                            console.log('设置昵称显示为:', nickname);
+                            nicknameElement.textContent = nickname;
+                        } else {
+                            console.warn('未找到profile-nickname显示元素');
+                        }
+                        
+                        const zodiacElement = document.getElementById('profile-zodiac');
+                        if (zodiacElement) {
+                            zodiacElement.textContent = profileData.zodiac || '';
+                        }
                         
                         let birthDisplay = '';
                         if (profileData.birthDate) {
-                            const birthDate = new Date(profileData.birthDate);
-                            const year = birthDate.getFullYear();
-                            const month = birthDate.getMonth() + 1;
-                            const day = birthDate.getDate();
-                            birthDisplay = `${year}年${month}月${day}日`;
+                            try {
+                                const birthDate = new Date(profileData.birthDate);
+                                if (!isNaN(birthDate.getTime())) {
+                                    const year = birthDate.getFullYear();
+                                    const month = birthDate.getMonth() + 1;
+                                    const day = birthDate.getDate();
+                                    birthDisplay = `${year}年${month}月${day}日`;
+                                } else {
+                                    console.warn('无效的日期格式:', profileData.birthDate);
+                                }
+                            } catch (e) {
+                                console.error('日期解析错误:', e);
+                            }
                         }
-                        document.getElementById('profile-birthinfo').textContent = birthDisplay;
                         
-                        document.getElementById('profile-gender').textContent = 
-                            profileData.gender ? `性别：${profileData.gender}` : '';
+                        const birthInfoElement = document.getElementById('profile-birthinfo');
+                        if (birthInfoElement) {
+                            birthInfoElement.textContent = birthDisplay;
+                        }
+                        
+                        const genderElement = document.getElementById('profile-gender');
+                        if (genderElement) {
+                            genderElement.textContent = profileData.gender ? `性别：${profileData.gender}` : '';
+                        }
                         
                         // 显示显示模式，隐藏编辑模式
-                        document.getElementById('profile-display').style.display = 'block';
-                        document.getElementById('profile-edit').style.display = 'none';
+                        if (document.getElementById('profile-display')) {
+                            document.getElementById('profile-display').style.display = 'block';
+                        }
+                        
+                        if (document.getElementById('profile-edit')) {
+                            document.getElementById('profile-edit').style.display = 'none';
+                        }
                     } else {
-                        // 没有保存的资料，显示编辑模式
-                        document.getElementById('profile-display').style.display = 'none';
-                        document.getElementById('profile-edit').style.display = 'block';
+                        // 尝试从旧格式中读取
+                        const userInfo = localStorage.getItem('userInfo');
+                        if (userInfo) {
+                            console.log('从userInfo读取到数据');
+                            const userInfoData = JSON.parse(userInfo);
+                            
+                            // 使用旧数据填充显示
+                            const nicknameElement = document.getElementById('profile-nickname');
+                            if (nicknameElement) {
+                                nicknameElement.textContent = userInfoData.nickname || '未设置昵称';
+                            }
+                            
+                            const zodiacElement = document.getElementById('profile-zodiac');
+                            if (zodiacElement) {
+                                zodiacElement.textContent = userInfoData.constellation || '';
+                            }
+                            
+                            const birthInfoElement = document.getElementById('profile-birthinfo');
+                            if (birthInfoElement && userInfoData.birthdate) {
+                                birthInfoElement.textContent = userInfoData.birthdate.replace(/-/g, '年') + '日';
+                            }
+                            
+                            const genderElement = document.getElementById('profile-gender');
+                            if (genderElement) {
+                                genderElement.textContent = userInfoData.gender ? `性别：${userInfoData.gender}` : '';
+                            }
+                            
+                            // 显示显示模式，隐藏编辑模式
+                            if (document.getElementById('profile-display')) {
+                                document.getElementById('profile-display').style.display = 'block';
+                            }
+                            
+                            if (document.getElementById('profile-edit')) {
+                                document.getElementById('profile-edit').style.display = 'none';
+                            }
+                        } else {
+                            console.log('未找到用户数据，显示编辑模式');
+                            // 没有保存的资料，显示编辑模式
+                            if (document.getElementById('profile-display')) {
+                                document.getElementById('profile-display').style.display = 'none';
+                            }
+                            
+                            if (document.getElementById('profile-edit')) {
+                                document.getElementById('profile-edit').style.display = 'block';
+                            }
+                        }
                     }
                 } catch (e) {
                     console.error('加载用户资料错误:', e);
@@ -3237,7 +3402,7 @@
             // 注册编辑按钮点击事件
             const editProfileBtn = document.getElementById('edit-profile-btn');
             if (editProfileBtn) {
-                editProfileBtn.addEventListener('click', switchToEditMode);
+                editProfileBtn.addEventListener('click', showEditProfileOverlay);
             }
             
             // 注册取消按钮点击事件
@@ -3277,6 +3442,72 @@
             
             // 加载用户资料
             loadUserProfile();
+        });
+
+        // 调试函数 - 检查localStorage内容
+        function debugLocalStorage() {
+            console.log('===== 调试本地存储 =====');
+            const userProfile = localStorage.getItem('userProfile');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            console.log('userProfile内容:', userProfile ? JSON.parse(userProfile) : '不存在');
+            console.log('userInfo内容:', userInfo ? JSON.parse(userInfo) : '不存在');
+            
+            // 检查DOM元素是否存在
+            console.log('profile-nickname元素:', document.getElementById('profile-nickname') ? '存在' : '不存在');
+            console.log('profile-zodiac元素:', document.getElementById('profile-zodiac') ? '存在' : '不存在');
+            console.log('profile-birthinfo元素:', document.getElementById('profile-birthinfo') ? '存在' : '不存在');
+            console.log('profile-gender元素:', document.getElementById('profile-gender') ? '存在' : '不存在');
+            
+            // 尝试手动设置
+            const nicknameElement = document.getElementById('profile-nickname');
+            if (nicknameElement) {
+                let nickname = '未设置昵称';
+                
+                // 首先尝试从userProfile中获取
+                if (userProfile) {
+                    try {
+                        const data = JSON.parse(userProfile);
+                        if (data.nickname && data.nickname.trim() !== '') {
+                            nickname = data.nickname;
+                        }
+                    } catch (e) {
+                        console.error('解析userProfile失败:', e);
+                    }
+                } 
+                // 如果从userProfile没有获取到，尝试从userInfo获取
+                else if (userInfo) {
+                    try {
+                        const data = JSON.parse(userInfo);
+                        if (data.nickname && data.nickname.trim() !== '') {
+                            nickname = data.nickname;
+                        }
+                    } catch (e) {
+                        console.error('解析userInfo失败:', e);
+                    }
+                }
+                
+                nicknameElement.textContent = nickname;
+                console.log('手动设置nickname显示为:', nickname);
+            }
+            
+            console.log('===== 调试结束 =====');
+        }
+        
+        // 页面加载时执行调试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，立即执行调试');
+            
+            // 立即执行一次调试，确保显示正确
+            debugLocalStorage();
+            
+            // 再延迟1秒执行一次，以防有延迟加载的元素
+            setTimeout(debugLocalStorage, 1000);
+            
+            // 暴露getUserProfile给全局window，使API能够访问
+            window.getUserProfile = getUserProfile;
+            
+            // ... 其他初始化代码 ...
         });
     </script>
 </body>

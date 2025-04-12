@@ -19,10 +19,10 @@ function getMoonPhase(date) {
     // 计算照明度（0-100%）
     const illumination = Math.abs(Math.cos(moonAge / synMonth * 2 * Math.PI)) * 100;
     
-    // 确定月相 - 固定为满月(测试用)
-    let phase = '满月';
-    let displayAge = 14.8; // 满月的月龄
-    let displayIllumination = 100.0; // 满月的照明度
+    // 确定月相 - 固定为盈凸月(测试用)
+    let phase = '盈凸月';
+    let displayAge = 11.0; // 盈凸月的月龄
+    let displayIllumination = 91.7; // 盈凸月的照明度
     
     /* 注释掉原来的月相计算逻辑
     if (moonAge < 1.84566) phase = '新月';
@@ -46,8 +46,12 @@ function getMoonPhase(date) {
 
 // 计算未来月相时间
 function calculateNextPhases(date) {
-    // 假设我们当前处于满月
+    // 假设我们当前处于盈凸月
     return [
+        {
+            phase: '盈凸月',
+            date: '4月11日 12:15'
+        },
         {
             phase: '满月',
             date: '4月13日 00:22'
@@ -59,10 +63,6 @@ function calculateNextPhases(date) {
         {
             phase: '新月',
             date: '4月27日 19:34'
-        },
-        {
-            phase: '娥眉月',
-            date: '5月5日 02:14'
         }
     ];
 }
@@ -84,7 +84,7 @@ function updateMoonPhaseDisplay() {
     });
 
     // 根据月相名称获取对应的SVG文件名
-    let svgFileName = 'full_moon.svg'; // 固定为满月
+    let svgFileName = 'waxing_gibbous.svg'; // 使用盈凸月图像
     
     // 更新所有月相图标 - 使用自定义SVG
     document.querySelectorAll('.moon-icon').forEach(moonIcon => {
@@ -114,7 +114,7 @@ function updateMoonPhaseDisplay() {
         const phaseEnglishElement = currentMoonPhaseSection.querySelector('div > div:nth-child(2)');
         
         if (phaseNameElement) phaseNameElement.textContent = moonData.phase;
-        if (phaseEnglishElement) phaseEnglishElement.textContent = 'Full Moon';
+        if (phaseEnglishElement) phaseEnglishElement.textContent = 'Waxing Gibbous';
     }
     
     // 更新月龄和照明度显示
@@ -135,7 +135,7 @@ function calculateMoonPath(phase) {
     const cx = 32; // 中心X坐标
     const cy = 32; // 中心Y坐标
     
-    // 满月的路径
+    // 盈凸月的路径 - 这里仍保留计算方法但已不再使用，因为我们使用外部SVG
     return `M${cx},${cy-r} A${r},${r} 0 1 1 ${cx},${cy+r} A${r},${r} 0 1 1 ${cx},${cy-r}`;
 }
 
@@ -146,7 +146,7 @@ function getMoonPhaseData() {
         phase: moonData.phase,
         age: moonData.age,
         illumination: moonData.illumination,
-        visibility: '19:00 - 05:30'  // 满月的大致可见时间
+        visibility: '18:30 - 04:15'  // 盈凸月的大致可见时间
     };
 }
 

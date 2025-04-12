@@ -1763,7 +1763,24 @@
                 </div>
                 
                 <div class="profile-content">
-                    <div class="message-box">
+                    <!-- 显示模式 -->
+                    <div id="profile-display" class="message-box">
+                        <div class="info-panel">
+                            <div id="profile-nickname" style="color: #fff; font-size: 24px; margin-bottom: 16px;"></div>
+                            <div id="profile-zodiac" style="color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 8px;"></div>
+                            <div id="profile-birthinfo" style="color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 16px;"></div>
+                            <div style="color: rgba(255,255,255,0.6); font-size: 14px;">
+                                <div id="profile-gender"></div>
+                                <div>观测记录：0次</div>
+                                <div>累计时长：0小时</div>
+                                <div>最常观测：满月</div>
+                            </div>
+                            <button id="edit-profile-btn" class="btn-edit" style="margin-top: 20px;">编辑信息</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 编辑模式 -->
+                    <div id="profile-edit" class="message-box" style="display: none;">
                         <form id="profile-form">
                             <div class="form-group">
                                 <label for="nickname">昵称</label>
@@ -1805,7 +1822,10 @@
                                 </select>
                             </div>
                             
-                            <button type="submit" class="btn-save">保存信息</button>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn-save">保存信息</button>
+                                <button type="button" id="cancel-edit-btn" class="btn-cancel">取消</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -3118,18 +3138,43 @@
 
         // 用户资料表单处理
         document.addEventListener('DOMContentLoaded', function() {
-            // 加载用户资料
+            // 加载用户资料并显示
             function loadUserProfile() {
                 try {
                     const userProfile = localStorage.getItem('userProfile');
                     if (userProfile) {
                         const profileData = JSON.parse(userProfile);
                         
-                        // 填充表单
+                        // 填充表单（编辑模式）
                         document.getElementById('nickname').value = profileData.nickname || '';
                         document.getElementById('birthdate').value = profileData.birthDate || '';
                         document.getElementById('zodiac').value = profileData.zodiac || '';
                         document.getElementById('gender').value = profileData.gender || '';
+                        
+                        // 填充显示区域（显示模式）
+                        document.getElementById('profile-nickname').textContent = profileData.nickname || '未设置昵称';
+                        document.getElementById('profile-zodiac').textContent = profileData.zodiac || '';
+                        
+                        let birthDisplay = '';
+                        if (profileData.birthDate) {
+                            const birthDate = new Date(profileData.birthDate);
+                            const year = birthDate.getFullYear();
+                            const month = birthDate.getMonth() + 1;
+                            const day = birthDate.getDate();
+                            birthDisplay = `${year}年${month}月${day}日`;
+                        }
+                        document.getElementById('profile-birthinfo').textContent = birthDisplay;
+                        
+                        document.getElementById('profile-gender').textContent = 
+                            profileData.gender ? `性别：${profileData.gender}` : '';
+                        
+                        // 显示显示模式，隐藏编辑模式
+                        document.getElementById('profile-display').style.display = 'block';
+                        document.getElementById('profile-edit').style.display = 'none';
+                    } else {
+                        // 没有保存的资料，显示编辑模式
+                        document.getElementById('profile-display').style.display = 'none';
+                        document.getElementById('profile-edit').style.display = 'block';
                     }
                 } catch (e) {
                     console.error('加载用户资料错误:', e);
@@ -3150,16 +3195,42 @@
                 try {
                     localStorage.setItem('userProfile', JSON.stringify(profileData));
                     alert('个人资料已保存');
+                    
+                    // 重新加载用户资料并显示
+                    loadUserProfile();
                 } catch (e) {
                     console.error('保存用户资料错误:', e);
                     alert('保存失败，请重试');
                 }
             }
             
+            // 切换到编辑模式
+            function switchToEditMode() {
+                document.getElementById('profile-display').style.display = 'none';
+                document.getElementById('profile-edit').style.display = 'block';
+            }
+            
+            // 切换到显示模式
+            function switchToDisplayMode() {
+                loadUserProfile();
+            }
+            
             // 注册表单提交事件
             const profileForm = document.getElementById('profile-form');
             if (profileForm) {
                 profileForm.addEventListener('submit', saveUserProfile);
+            }
+            
+            // 注册编辑按钮点击事件
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', switchToEditMode);
+            }
+            
+            // 注册取消按钮点击事件
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            if (cancelEditBtn) {
+                cancelEditBtn.addEventListener('click', switchToDisplayMode);
             }
             
             // 自动计算星座

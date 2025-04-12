@@ -48,3 +48,40 @@
 .btn-save:hover {
     background: rgba(255, 255, 255, 0.25);
 }
+
+.btn-edit {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-edit:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.btn-cancel {
+    background: rgba(100, 100, 100, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-cancel:hover {
+    background: rgba(100, 100, 100, 0.25);
+}
+
+.info-panel {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+}

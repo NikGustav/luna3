@@ -647,25 +647,65 @@
         }
 
         .user-message {
-            margin-left: auto;
-            text-align: right;
-            transform-origin: right bottom;
-            width: 100%; /* 确保整个容器占满宽度 */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end; /* 子元素靠右对齐 */
+            align-self: flex-end !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+            text-align: left !important;
+            float: right !important;
+            max-width: 85% !important;
+            width: auto !important;
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            clear: both !important;
+            position: relative !important;
         }
-
+        
         .user-message .message-content {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.95);
-            margin-left: auto;
-            border-bottom-right-radius: 8px;
-            display: inline-block; /* 使内容块只占用必要的宽度 */
-            max-width: 85%; /* 最大宽度限制 */
-            width: auto; /* 根据内容自动调整宽度 */
-            text-align: left; /* 消息内容左对齐 */
-            float: right; /* 确保消息框靠右 */
+            float: right !important;
+            text-align: left !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            margin-left: auto !important;
+            margin-bottom: 4px !important; /* 从8px减小到4px */
+            color: rgba(255, 255, 255, 0.95) !important; /* 确保用户输入的文字是白色的 */
+        }
+        
+        .message {
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            position: relative !important;
+            clear: both !important;
+        }
+        
+        .ai-message {
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            margin-top: 4px !important; /* 从8px减小到4px */
+            clear: both !important;
+        }
+        
+        .message-time {
+            margin-top: 2px !important; /* 从4px减小到2px */
+            margin-bottom: 4px !important; /* 从8px减小到4px */
+            opacity: 0.6 !important;
+            position: relative !important;
+            clear: both !important;
+        }
+        
+        #conversation-overlay .user-message,
+        .overlay-message-box .user-message {
+            text-align: left !important;
+            float: right !important;
+            align-self: flex-end !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+            width: auto !important;
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            clear: both !important;
+        }
+        
+        /* 减小消息容器间距 */
+        .overlay-message-box {
+            padding: 12px !important; /* 从16px减小到12px */
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important; /* 从16px减小到8px */
         }
 
         .ai-message .message-content {
@@ -1511,13 +1551,61 @@
             margin-left: auto !important;
             margin-right: 0 !important;
             text-align: left !important;
+            float: right !important;
+            max-width: 85% !important;
+            width: auto !important;
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            clear: both !important;
+            position: relative !important;
+        }
+        
+        .user-message .message-content {
+            float: right !important;
+            text-align: left !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            margin-left: auto !important;
+            margin-bottom: 4px !important; /* 从8px减小到4px */
+            color: rgba(255, 255, 255, 0.95) !important; /* 确保用户输入的文字是白色的 */
+        }
+        
+        .message {
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            position: relative !important;
+            clear: both !important;
+        }
+        
+        .ai-message {
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            margin-top: 4px !important; /* 从8px减小到4px */
+            clear: both !important;
+        }
+        
+        .message-time {
+            margin-top: 2px !important; /* 从4px减小到2px */
+            margin-bottom: 4px !important; /* 从8px减小到4px */
+            opacity: 0.6 !important;
+            position: relative !important;
+            clear: both !important;
         }
         
         #conversation-overlay .user-message,
         .overlay-message-box .user-message {
             text-align: left !important;
-            float: none !important;
+            float: right !important;
             align-self: flex-end !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+            width: auto !important;
+            margin-bottom: 12px !important; /* 从24px减小到12px */
+            clear: both !important;
+        }
+        
+        /* 减小消息容器间距 */
+        .overlay-message-box {
+            padding: 12px !important; /* 从16px减小到12px */
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important; /* 从16px减小到8px */
         }
     </style>
 </head>
@@ -2710,10 +2798,24 @@
             }
         }
 
+        // 添加缺失的getUserProfile函数
+        function getUserProfile() {
+            const userInfoString = localStorage.getItem('userInfo');
+            if (userInfoString) {
+                try {
+                    return JSON.parse(userInfoString);
+                } catch (e) {
+                    console.error('Failed to parse user info:', e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
         // 欢迎页开始按钮功能 - 确保正确实现
         function startApp() {
             // 检查是否已有用户信息
-            const userInfo = localStorage.getItem('userInfo');
+            const userInfo = getUserProfile();
             
             if (!userInfo) {
                 // 如果没有用户信息，显示信息收集弹窗
@@ -2724,7 +2826,7 @@
                 requestAnimationFrame(() => {
                     overlay.classList.add('active');
                 });
-                } else {
+            } else {
                 // 如果已有用户信息，直接进入主页
                 switchPage('home-page');
                 document.querySelector('.nav-bar').style.display = 'flex';
